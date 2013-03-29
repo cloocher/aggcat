@@ -8,9 +8,10 @@ Gem::Specification.new do |spec|
   spec.version       = Aggcat::VERSION
   spec.authors       = ['Gene Drabkin']
   spec.email         = ['gene.drabkin@gmail.com']
-  spec.description   = %q{Intuit Customer Account Data API client}
+  gem.platform       = Gem::Platform::RUBY
+  spec.description   = %q{Aggcat wraps Intuit's Customer Account Data API in a simple client}
   spec.summary       = %q{Intuit Customer Account Data API client}
-  spec.homepage      = ''
+  spec.homepage      = 'https://github.com/cloocher/aggcat'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($/)
@@ -18,11 +19,14 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.add_development_dependency 'oauth', '~> 0.4'
-  spec.add_development_dependency 'nori', '~> 2.0'
-  spec.add_development_dependency 'nokogiri', '~> 1.5'
-  spec.add_development_dependency 'active_support', '~> 3.0'
-  spec.add_development_dependency 'bundler', '~> 1.3'
-  spec.add_development_dependency 'rake'
+  spec.required_ruby_version     = '>= 1.9.2'
+  spec.required_rubygems_version = '>= 1.3.6'
 
+  spec.add_runtime_dependency 'oauth', '~> 0.4'
+  spec.add_runtime_dependency 'nori', '~> 2.0'
+  spec.add_runtime_dependency 'nokogiri', '~> 1.5'
+  spec.add_runtime_dependency 'active_support', '~> 3.0'
+
+  spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'bundler'
 end
