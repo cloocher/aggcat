@@ -78,7 +78,7 @@ module Aggcat
     def validate(args)
       args.each do |name, value|
         if value.nil? || value.to_s.empty?
-          raise ArgumentError, "#{name} is required"
+          raise ArgumentError.new("#{name} is required")
         end
       end
     end
