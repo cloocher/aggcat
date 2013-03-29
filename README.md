@@ -53,6 +53,9 @@ Aggcat.discover_and_add_accounts(14007, username, password)
 # get already aggregated financial account
 Aggcat.account(account_id)
 
+# you can set scope inline
+Aggcat.scope(customer1).account(account_id)
+
 # get all aggregated accounts
 Aggcat.accounts
 
