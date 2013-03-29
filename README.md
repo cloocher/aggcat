@@ -23,17 +23,17 @@ require 'aggcat'
 
 # Aggcat global configuration
 Aggcat.configure do |config|
-  config.issuer_id = YOUR_ISSUER_ID
-  config.consumer_key = YOUR_CONSUMER_KEY
-  config.consumer_secret = YOUR_CONSUMER_SECRET
+  config.issuer_id = 'your issuer id'
+  config.consumer_key = 'your consumer key'
+  config.consumer_secret = 'your consumer secret'
   config.certificate_path = '/path/to/your/certificate/key'
 end
 
 # alternatively, specify configuration options when instantiating an Aggcat::Client
 client = Aggcat::Client.new(
-  issuer_id: YOUR_ISSUER_ID,
-  consumer_key: YOUR_CONSUMER_KEY,
-  consumer_secret: YOUR_CONSUMER_SECRET,
+  issuer_id: 'your issuer id',
+  consumer_key: 'your consumer key',
+  consumer_secret: 'your consumer secret',
   certificate_path: '/path/to/your/certificate/key'
 )
 
