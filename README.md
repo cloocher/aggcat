@@ -34,8 +34,12 @@ client = Aggcat::Client.new(
   issuer_id: 'your issuer id',
   consumer_key: 'your consumer key',
   consumer_secret: 'your consumer secret',
-  certificate_path: '/path/to/your/certificate/key'
+  certificate_path: '/path/to/your/certificate/key',
+  customer_id: 'scope for all requests'
 )
+
+# scope Aggcat client by customer id
+Aggcat.scope(customer_id)
 
 # get all supported financial institutions
 Aggcat.institutions
