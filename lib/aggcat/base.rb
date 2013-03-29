@@ -21,7 +21,7 @@ module Aggcat
 
     TIMEOUT = 120
 
-    IGNORE_KEYS = Set.new([:'@xmlns', :'@xmlns:ns2', :'@xmlns:ns3', :'@xmlns:ns4', :'@xmlns:ns5', :'@xmlns:ns6', :'@xmlns:ns7', :'@xmlns:ns8'])
+    IGNORE_KEYS = Set.new([:'@xmlns', :'@xmlns:ns2', :'@xmlns:ns3', :'@xmlns:ns4', :'@xmlns:ns5', :'@xmlns:ns6', :'@xmlns:ns7', :'@xmlns:ns8', :'@xmlns:ns9'])
 
     protected
 
