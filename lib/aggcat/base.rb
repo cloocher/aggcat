@@ -25,8 +25,8 @@ module Aggcat
 
     protected
 
-    def access_token(consumer_id)
-      token = oauth_token(consumer_id)
+    def access_token(user_id)
+      token = oauth_token(user_id)
       consumer = OAuth::Consumer.new(@consumer_key, @consumer_secret, {:timeout => TIMEOUT})
       OAuth::AccessToken.new(consumer, token[:key], token[:secret])
     end
