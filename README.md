@@ -29,7 +29,7 @@ Aggcat.configure do |config|
   config.certificate_path = '/path/to/your/certificate/key'
 end
 
-# Or, if you prefer, you can specify all configuration options when instantiating an Aggcat::Client:
+# alternatively, specify configuration options when instantiating an Aggcat::Client
 client = Aggcat::Client.new(
   issuer_id: YOUR_ISSUER_ID,
   consumer_key: YOUR_CONSUMER_KEY,
