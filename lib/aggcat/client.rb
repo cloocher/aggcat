@@ -14,10 +14,12 @@ module Aggcat
     end
 
     def institution(institution_id)
+      validate(institution_id: institution_id)
       get("/institutions/#{institution_id}")
     end
 
     def discover_and_add_accounts(institution_id, username, password)
+      validate(institution_id: institution_id, username: username, password: password)
       body = credentials(institution_id, username, password)
       post("/institutions/#{institution_id}/logins", body, {user_id: "#{institution_id}-#{username}"})
     end
@@ -27,21 +29,21 @@ module Aggcat
     end
 
     def account(account_id)
+      validate(account_id: account_id)
       get("/accounts/#{account_id}")
     end
 
-    def account_transactions(account_id, start_date = nil, end_date = nil)
-      uri = "/accounts/#{account_id}/transactions"
-      if start_date
-        uri += "?txnStartDate=#{start_date.strftime(DATE_FORMAT)}"
-        if end_date
-          uri += "&txnEndDate=#{end_date.strftime(DATE_FORMAT)}"
-        end
+    def account_transactions(account_id, start_date, end_date = nil)
+      validate(account_id: account_id, start_date: start_date)
+      uri = "/accounts/#{account_id}/transactions?txnStartDate=#{start_date.strftime(DATE_FORMAT)}"
+      if end_date
+        uri += "&txnEndDate=#{end_date.strftime(DATE_FORMAT)}"
       end
       get(uri)
     end
 
     def delete_account(account_id)
+      validate(account_id: account_id)
       delete("/accounts/#{account_id}")
     end
 
@@ -72,6 +74,14 @@ module Aggcat
     end
 
     private
+
+    def validate(args)
+      args.each do |name, value|
+        if value.nil? || value.to_s.empty?
+          raise ArgumentError, "#{name} is required"
+        end
+      end
+    end
 
     def credentials(institution_id, username, password)
       institution = institution(institution_id)
