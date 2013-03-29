@@ -8,7 +8,6 @@ Gem::Specification.new do |spec|
   spec.version       = Aggcat::VERSION
   spec.authors       = ['Gene Drabkin']
   spec.email         = ['gene.drabkin@gmail.com']
-  gem.platform       = Gem::Platform::RUBY
   spec.description   = %q{Aggcat wraps Intuit's Customer Account Data API in a simple client}
   spec.summary       = %q{Intuit Customer Account Data API client}
   spec.homepage      = 'https://github.com/cloocher/aggcat'
