@@ -62,8 +62,8 @@ Aggcat.delete_account(account_id)
 # get account transactions
 Aggcat.account_transactions(account_id, start_date, end_date)
 
-# delete all aggregated customers
-Aggcat.delete_customers
+# delete customer for the current scope
+Aggcat.delete_customer
 
 ```
 
