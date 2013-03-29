@@ -12,7 +12,7 @@ module Aggcat
         @customer_id = customer_id
         @client = Aggcat::Client.new(options.merge({customer_id: customer_id}))
       end
-      customer_id
+      @client
     end
 
     def client
