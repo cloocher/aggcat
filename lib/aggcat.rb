@@ -7,8 +7,16 @@ module Aggcat
   class << self
     include Aggcat::Configurable
 
+    def scope(customer_id)
+      if !defined?(@customer_id) || @customer_id != customer_id
+        @customer_id = customer_id
+        @client = Aggcat::Client.new(options.merge({customer_id: customer_id}))
+      end
+    end
+
     def client
-      @client ||= Aggcat::Client.new(options)
+      raise ArgumentError.new('set the client scope first by calling Aggcat.scope(customer_id)') unless defined?(@customer_id)
+      @client
     end
 
     private

@@ -25,18 +25,17 @@ module Aggcat
 
     protected
 
-    def access_token(user_id)
-      token = oauth_token(user_id)
+    def access_token
+      token = oauth_token
       consumer = OAuth::Consumer.new(@consumer_key, @consumer_secret, {:timeout => TIMEOUT})
       OAuth::AccessToken.new(consumer, token[:key], token[:secret])
     end
 
-    def oauth_token(user_id)
+    def oauth_token
       now = Time.now.utc
-      if @oauth_token.nil? || @oauth_token[:expire_at] <= now || @oauth_token[:user_id] != user_id
-        @oauth_token = new_token(saml_message(user_id))
+      if @oauth_token.nil? || @oauth_token[:expire_at] <= now
+        @oauth_token = new_token(saml_message(@customer_id))
         @oauth_token[:expire_at] = now + 9 * 60 # 9 minutes
-        @oauth_token[:user_id] = user_id
       end
       @oauth_token
     end

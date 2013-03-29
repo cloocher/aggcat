@@ -4,6 +4,7 @@ module Aggcat
     BASE_URL = 'https://financialdatafeed.platform.intuit.com/rest-war/v1'
 
     def initialize(options={})
+      raise ArgumentError.new('customer_id is required for scoping all requests') if options[:customer_id].nil? || options[:customer_id].to_s.empty?
       Aggcat::Configurable::KEYS.each do |key|
         instance_variable_set(:"@#{key}", options[key] || Aggcat.instance_variable_get(:"@#{key}"))
       end
@@ -21,7 +22,7 @@ module Aggcat
     def discover_and_add_accounts(institution_id, username, password)
       validate(institution_id: institution_id, username: username, password: password)
       body = credentials(institution_id, username, password)
-      post("/institutions/#{institution_id}/logins", body, {user_id: "#{institution_id}-#{username}"})
+      post("/institutions/#{institution_id}/logins", body)
     end
 
     def accounts
@@ -47,19 +48,19 @@ module Aggcat
       delete("/accounts/#{account_id}")
     end
 
-    def delete_customers
+    def delete_customer
       delete('/customers')
     end
 
     protected
 
-    def get(uri, options = {:user_id => 'default'})
-      response = access_token(options[:user_id]).get("#{BASE_URL}#{uri}")
+    def get(uri)
+      response = access_token.get("#{BASE_URL}#{uri}")
       {:response_code => response.code, :response => parse_xml(response.body)}
     end
 
-    def post(uri, message, options = {})
-      response = access_token(options[:user_id]).post("#{BASE_URL}#{uri}", message, {'Content-Type' => 'application/xml'})
+    def post(uri, message)
+      response = access_token.post("#{BASE_URL}#{uri}", message, {'Content-Type' => 'application/xml'})
       result = {:response_code => response.code, :response => parse_xml(response.body)}
       if response['challengeSessionId']
         result[:challenge_session_id] = response['challengeSessionId']
@@ -68,8 +69,8 @@ module Aggcat
       result
     end
 
-    def delete(uri, options = {:user_id => 'default'})
-      response = access_token(options[:user_id]).delete("#{BASE_URL}#{uri}")
+    def delete(uri)
+      response = access_token.delete("#{BASE_URL}#{uri}")
       {:response_code => response.code, :response => parse_xml(response.body)}
     end
 
