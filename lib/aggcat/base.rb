@@ -21,7 +21,7 @@ module Aggcat
 
     TIMEOUT = 120
 
-    DELETE_KEYS = {:'@xmlns' => nil, :'@xmlns:ns2' => nil, :'@xmlns:ns3' => nil, :'@xmlns:ns4' => nil, :'@xmlns:ns5' => nil, :'@xmlns:ns6' => nil, :'@xmlns:ns7' => nil, :'@xmlns:ns8' => nil}
+    IGNORE_KEYS = Set.new([:'@xmlns', :'@xmlns:ns2', :'@xmlns:ns3', :'@xmlns:ns4', :'@xmlns:ns5', :'@xmlns:ns6', :'@xmlns:ns7', :'@xmlns:ns8'])
 
     protected
 
@@ -84,7 +84,7 @@ module Aggcat
 
     def cleanup(hash)
       hash.each do |k, v|
-        if DELETE_KEYS.has_key?(k)
+        if IGNORE_KEYS.include?(k)
           hash.delete(k)
         elsif v.respond_to?(:keys)
           cleanup(v)
