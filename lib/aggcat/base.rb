@@ -15,7 +15,9 @@ module Aggcat
 
     SAML_URL = 'https://oauth.intuit.com/oauth/v1/get_access_token_by_saml'
 
-    NAMESPACE = 'http://schema.intuit.com/platform/fdatafeed/institutionlogin/v1'
+    LOGIN_NAMESPACE = 'http://schema.intuit.com/platform/fdatafeed/institutionlogin/v1'
+    CHALLENGE_NAMESPACE = 'http://schema.intuit.com/platform/fdatafeed/challenge/v1'
+
     TIME_FORMAT = '%Y-%m-%dT%T.%LZ'
     DATE_FORMAT = '%Y-%m-%d'
 

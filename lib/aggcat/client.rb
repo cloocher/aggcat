@@ -25,6 +25,12 @@ module Aggcat
       post("/institutions/#{institution_id}/logins", body)
     end
 
+    def account_confirmation(institution_id, challenge_session_id, challenge_node_id, answer)
+      validate(institution_id: institution_id, challenge_node_id: challenge_session_id, challenge_node_id: challenge_node_id, answer: answer)
+      headers = {challengeSessionId: challenge_session_id, challengeNodeId: challenge_node_id}
+      post("/institutions/#{institution_id}/logins", challenge_answer(answer), headers)
+    end
+
     def accounts
       get('/accounts')
     end
@@ -43,6 +49,18 @@ module Aggcat
       get(uri)
     end
 
+    def update_login(institution_id, login_id, username, password)
+      validate(institution_id: institution_id, login_id: login_id, username: username, password: password)
+      body = credentials(institution_id, username, password)
+      put("/logins/#{login_id}?refresh=true", body)
+    end
+
+    def update_login_confirmation(login_id, challenge_session_id, challenge_node_id, answer)
+      validate(login_id: login_id, challenge_node_id: challenge_session_id, challenge_node_id: challenge_node_id, answer: answer)
+      headers = {challengeSessionId: challenge_session_id, challengeNodeId: challenge_node_id}
+      put("/logins/#{login_id}?refresh=true", challenge_answer(answer), headers)
+    end
+
     def delete_account(account_id)
       validate(account_id: account_id)
       delete("/accounts/#{account_id}")
@@ -54,13 +72,26 @@ module Aggcat
 
     protected
 
-    def get(uri)
-      response = access_token.get("#{BASE_URL}#{uri}")
-      {:response_code => response.code, :response => parse_xml(response.body)}
+    def get(uri, headers = {})
+      request(:get, uri, headers)
     end
 
-    def post(uri, message)
-      response = access_token.post("#{BASE_URL}#{uri}", message, {'Content-Type' => 'application/xml'})
+    def post(uri, body, headers = {})
+      request(:post, uri, body, headers.merge({'Content-Type' => 'application/xml'}))
+    end
+
+    def put(uri, body, headers = {})
+      request(:put, uri, body, headers.merge({'Content-Type' => 'application/xml'}))
+    end
+
+    def delete(uri, headers = {})
+      request(:delete, uri, headers.merge({'Content-Type' => 'application/xml'}))
+    end
+
+    private
+
+    def request(method, uri, *options)
+      response = access_token.send(method.to_sym, BASE_URL + uri, *options)
       result = {:response_code => response.code, :response => parse_xml(response.body)}
       if response['challengeSessionId']
         result[:challenge_session_id] = response['challengeSessionId']
@@ -68,13 +99,6 @@ module Aggcat
       end
       result
     end
-
-    def delete(uri)
-      response = access_token.delete("#{BASE_URL}#{uri}")
-      {:response_code => response.code, :response => parse_xml(response.body)}
-    end
-
-    private
 
     def validate(args)
       args.each do |name, value|
@@ -93,10 +117,10 @@ module Aggcat
       }
 
       xml = Builder::XmlMarkup.new
-      xml.InstitutionLogin('xmlns' => NAMESPACE) do |login|
-        login.credentials('xmlns:ns1' => NAMESPACE) do
+      xml.InstitutionLogin('xmlns' => LOGIN_NAMESPACE) do |login|
+        login.credentials('xmlns:ns1' => LOGIN_NAMESPACE) do
           hash.each do |key, value|
-            xml.tag!('ns1:credential', {'xmlns:ns2' => NAMESPACE}) do
+            xml.tag!('ns1:credential', {'xmlns:ns2' => LOGIN_NAMESPACE}) do
               xml.tag!('ns2:name', key)
               xml.tag!('ns2:value', value)
             end
@@ -104,6 +128,16 @@ module Aggcat
         end
       end
     end
+
+    def challenge_answer(answer)
+      xml = Builder::XmlMarkup.new
+      xml.InstitutionLogin('xmlns:v1' => LOGIN_NAMESPACE) do |login|
+        login.challengeResponses do |challenge|
+          challenge.response(answer, 'xmlns:v11' => CHALLENGE_NAMESPACE)
+        end
+      end
+    end
   end
 end
+
 

@@ -59,6 +59,9 @@ Aggcat.scope(customer1).account(account_id)
 # get all aggregated accounts
 Aggcat.accounts
 
+# update login credentials
+Aggcat.update_login(institution_id, login_id, new_username, new_password)
+
 # delete account
 Aggcat.delete_account(account_id)
 
