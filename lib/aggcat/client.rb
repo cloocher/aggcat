@@ -91,7 +91,7 @@ module Aggcat
     private
 
     def request(method, uri, *options)
-      response = access_token.send(method.to_sym, BASE_URL + uri, *options)
+      response = oauth_client.send(method.to_sym, BASE_URL + uri, *options)
       result = {:response_code => response.code, :response => parse_xml(response.body)}
       if response['challengeSessionId']
         result[:challenge_session_id] = response['challengeSessionId']

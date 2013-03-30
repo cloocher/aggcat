@@ -27,17 +27,19 @@ module Aggcat
 
     protected
 
-    def access_token
-      token = oauth_token
-      consumer = OAuth::Consumer.new(@consumer_key, @consumer_secret, {:timeout => TIMEOUT})
-      OAuth::AccessToken.new(consumer, token[:key], token[:secret])
+    def oauth_client
+      OAuth::AccessToken.new(oauth_consumer, *oauth_token)
+    end
+
+    def oauth_consumer
+      @oauth_consumer ||= OAuth::Consumer.new(@consumer_key, @consumer_secret, {:timeout => TIMEOUT})
     end
 
     def oauth_token
-      now = Time.now.utc
-      if @oauth_token.nil? || @oauth_token[:expire_at] <= now
+      now = Time.now
+      if @oauth_token.nil? || @oauth_token_expire_at <= now
         @oauth_token = new_token(saml_message(@customer_id))
-        @oauth_token[:expire_at] = now + 9 * 60 # 9 minutes
+        @oauth_token_expire_at = now + 9 * 60 # 9 minutes
       end
       @oauth_token
     end
@@ -53,7 +55,7 @@ module Aggcat
       #http.set_debug_output($stdout)
       response = http.request(request)
       params = CGI::parse(response.body)
-      {key: params['oauth_token'][0], secret: params['oauth_token_secret'][0]}
+      [params['oauth_token'][0], params['oauth_token_secret'][0]]
     end
 
     def saml_message(user_id)
