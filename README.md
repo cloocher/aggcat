@@ -1,6 +1,7 @@
 # Aggcat
 [![Build Status](https://travis-ci.org/cloocher/aggcat.png)](https://travis-ci.org/cloocher/aggcat)
 [![Coverage Status](https://coveralls.io/repos/cloocher/aggcat/badge.png?branch=master)](https://coveralls.io/r/cloocher/aggcat)
+[![Gem Version](https://badge.fury.io/rb/aggcat.png)](http://badge.fury.io/rb/aggcat)
 
   Intuit Customer Account Data API client
 
@@ -78,6 +79,10 @@ Aggcat.delete_customer
 ## Documentation
 
 Please make sure to read Intuit's [Account Data API](http://docs.developer.intuit.com/0020_Aggregation_Categorization_Apps/AggCat_API/0020_API_Documentation) docs.
+
+## Requirements
+
+* Ruby 1.9.2 or higher
 
 ## Copyright
 Copyright (c) 2013 Gene Drabkin.
