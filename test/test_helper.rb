@@ -2,11 +2,19 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 require 'simplecov'
+require 'coveralls'
+
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+  SimpleCov::Formatter::HTMLFormatter,
+  Coveralls::SimpleCov::Formatter
+]
 SimpleCov.start
 
 require 'webmock/test_unit'
 require 'test/unit'
 require 'aggcat'
+
+WebMock.disable_net_connect!(:allow => 'coveralls.io')
 
 def stub_delete(path)
   stub_request(:delete, Aggcat::Client::BASE_URL + path)
