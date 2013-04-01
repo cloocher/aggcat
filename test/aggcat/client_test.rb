@@ -27,9 +27,10 @@ class ClientTest < Test::Unit::TestCase
     assert_equal institution_id, response[:response][:institution_detail][:institution_id]
   end
 
-  def test_institution_with_bad_id
-    institution_id = '100000'
-    stub_get("/institutions/#{institution_id}").to_return(:body => fixture('institution.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
+  def test_institution_with_bad_args
+    exception = assert_raise(ArgumentError) { @client.institution(nil) }
+    assert_equal('institution_id is required', exception.message)
+
     exception = assert_raise(ArgumentError) { @client.institution('') }
     assert_equal('institution_id is required', exception.message)
   end
@@ -43,11 +44,48 @@ class ClientTest < Test::Unit::TestCase
     assert_equal '000000000001', response[:response][:account_list][:banking_account][:account_id]
   end
 
+  def test_discover_and_add_accounts_with_challenge
+    institution_id = '100000'
+    stub_get("/institutions/#{institution_id}").to_return(:body => fixture('institution.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
+    stub_post("/institutions/#{institution_id}/logins").to_return(:code => 401, :body => fixture('account.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
+    response = @client.discover_and_add_accounts(institution_id, 'username', 'password')
+    assert_equal institution_id, response[:response][:account_list][:banking_account][:institution_id]
+    assert_equal '000000000001', response[:response][:account_list][:banking_account][:account_id]
+  end
+
+  def test_discover_and_add_accounts_bad_args
+    exception = assert_raise(ArgumentError) { @client.discover_and_add_accounts(nil, 'username', 'password') }
+    assert_equal('institution_id is required', exception.message)
+
+    exception = assert_raise(ArgumentError) { @client.discover_and_add_accounts('', 'username', 'password') }
+    assert_equal('institution_id is required', exception.message)
+
+    exception = assert_raise(ArgumentError) { @client.discover_and_add_accounts(1, nil, 'password') }
+    assert_equal('username is required', exception.message)
+
+    exception = assert_raise(ArgumentError) { @client.discover_and_add_accounts(1, '', 'password') }
+    assert_equal('username is required', exception.message)
+
+    exception = assert_raise(ArgumentError) { @client.discover_and_add_accounts(1, 'username', nil) }
+    assert_equal('password is required', exception.message)
+
+    exception = assert_raise(ArgumentError) { @client.discover_and_add_accounts(1, 'username', '') }
+    assert_equal('password is required', exception.message)
+  end
+
   def test_account
     account_id = '000000000001'
     stub_get("/accounts/#{account_id}").to_return(:body => fixture('account.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
     response = @client.account(account_id)
     assert_equal account_id, response[:response][:account_list][:banking_account][:account_id]
+  end
+
+  def test_account_bad_args
+    exception = assert_raise(ArgumentError) { @client.account(nil) }
+    assert_equal('account_id is required', exception.message)
+
+    exception = assert_raise(ArgumentError) { @client.account('') }
+    assert_equal('account_id is required', exception.message)
   end
 
   def test_accounts
@@ -62,8 +100,36 @@ class ClientTest < Test::Unit::TestCase
     start_date = Date.today - 30
     uri = "/accounts/#{account_id}/transactions?txnStartDate=#{start_date.strftime(Aggcat::Base::DATE_FORMAT)}"
     stub_get(uri).to_return(:body => fixture('transactions.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
-    response = @client.account_transactions(account_id, Date.today - 30)
+    response = @client.account_transactions(account_id, start_date)
     assert_equal '75000088503', response[:response][:transaction_list][:credit_card_transaction][:id]
+  end
+
+  def test_account_transactions_with_dates
+    account_id = '000000000001'
+    end_date = Date.today
+    start_date = end_date - 30
+    challenge_session_id = '1234'
+    challenge_node_id = '4321'
+    uri = "/accounts/#{account_id}/transactions?txnStartDate=#{start_date.strftime(Aggcat::Base::DATE_FORMAT)}&txnEndDate=#{end_date.strftime(Aggcat::Base::DATE_FORMAT)}"
+    stub_get(uri).to_return(:body => fixture('transactions.xml'), :headers => {:content_type => 'application/xml; charset=utf-8', :challengeSessionId => challenge_session_id, :challengeNodeId => challenge_node_id})
+    response = @client.account_transactions(account_id, start_date, end_date)
+    assert_equal '75000088503', response[:response][:transaction_list][:credit_card_transaction][:id]
+    assert_equal response[:challenge_session_id], challenge_session_id
+    assert_equal response[:challenge_node_id], challenge_node_id
+  end
+
+  def test_account_transactions_bad_args
+    exception = assert_raise(ArgumentError) { @client.account_transactions(nil, Date.today) }
+    assert_equal('account_id is required', exception.message)
+
+    exception = assert_raise(ArgumentError) { @client.account_transactions('', Date.today) }
+    assert_equal('account_id is required', exception.message)
+
+    exception = assert_raise(ArgumentError) { @client.account_transactions(1, nil) }
+    assert_equal('start_date is required', exception.message)
+
+    exception = assert_raise(ArgumentError) { @client.account_transactions(1, '') }
+    assert_equal('start_date is required', exception.message)
   end
 
   def test_delete_account
@@ -71,6 +137,14 @@ class ClientTest < Test::Unit::TestCase
     stub_delete("/accounts/#{account_id}").to_return(:status => 200)
     response = @client.delete_account(account_id)
     assert_equal '200', response[:response_code]
+  end
+
+  def test_delete_account_bad_args
+    exception = assert_raise(ArgumentError) { @client.delete_account(nil) }
+    assert_equal('account_id is required', exception.message)
+
+    exception = assert_raise(ArgumentError) { @client.delete_account('') }
+    assert_equal('account_id is required', exception.message)
   end
 
   def test_delete_customer
@@ -86,6 +160,59 @@ class ClientTest < Test::Unit::TestCase
     stub_put("/logins/#{login_id}?refresh=true").to_return(:status => 200)
     response = @client.update_login(institution_id, login_id, 'usename', 'password')
     assert_equal '200', response[:response_code]
+  end
+
+  def test_update_login_bad_args
+    exception = assert_raise(ArgumentError) { @client.update_login(nil, 1, 'username', 'password') }
+    assert_equal('institution_id is required', exception.message)
+
+    exception = assert_raise(ArgumentError) { @client.update_login('', 1, 'username', 'password') }
+    assert_equal('institution_id is required', exception.message)
+
+    exception = assert_raise(ArgumentError) { @client.update_login(1, nil, 'username', 'password') }
+    assert_equal('login_id is required', exception.message)
+
+    exception = assert_raise(ArgumentError) { @client.update_login(1, '', 'username', 'password') }
+    assert_equal('login_id is required', exception.message)
+
+    exception = assert_raise(ArgumentError) { @client.update_login(1, 1, nil, 'password') }
+    assert_equal('username is required', exception.message)
+
+    exception = assert_raise(ArgumentError) { @client.update_login(1, 1, '', 'password') }
+    assert_equal('username is required', exception.message)
+
+    exception = assert_raise(ArgumentError) { @client.update_login(1, 1, 'username', nil) }
+    assert_equal('password is required', exception.message)
+
+    exception = assert_raise(ArgumentError) { @client.update_login(1, 1, 'username', '') }
+    assert_equal('password is required', exception.message)
+  end
+
+
+  def test_account_confirmation
+    institution_id = '100000'
+    challenge_session_id = '1234'
+    challenge_node_id = '4321'
+    answer = 'answer'
+    parser = Nori.new(:parser => :nokogiri, :strip_namespaces => true, :convert_tags_to => lambda { |tag| tag.snakecase.to_sym })
+    stub_get("/institutions/#{institution_id}").to_return(:body => fixture('institution.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
+    stub_post("/institutions/#{institution_id}/logins").to_return(:body => lambda { |request| assert_equal(parser.parse(fixture('challenge.xml').read), parser.parse(request.body)) })
+    @client.account_confirmation(institution_id, challenge_session_id, challenge_node_id, answer)
+  end
+
+  def test_update_login_confirmation
+    login_id = '1234567890'
+    challenge_session_id = '1234'
+    challenge_node_id = '4321'
+    answer = 'answer'
+    validator = lambda do |request|
+      parser = Nori.new(:parser => :nokogiri, :strip_namespaces => true, :convert_tags_to => lambda { |tag| tag.snakecase.to_sym })
+      assert_equal(parser.parse(fixture('challenge.xml').read), parser.parse(request.body))
+      assert_equal(challenge_session_id, request.headers['Challengesessionid'])
+      assert_equal(challenge_node_id, request.headers['Challengenodeid'])
+    end
+    stub_put("/logins/#{login_id}?refresh=true").to_return(:body => validator)
+    @client.update_login_confirmation(login_id, challenge_session_id, challenge_node_id, answer)
   end
 
 end
