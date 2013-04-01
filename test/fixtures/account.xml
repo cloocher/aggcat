@@ -1,0 +1,23 @@
+<ns8:AccountList xmlns="http://schema.intuit.com/platform/fdatafeed/account/v1"
+                 xmlns:ns2="http://schema.intuit.com/platform/fdatafeed/investmentaccount/v1"
+                 xmlns:ns3="http://schema.intuit.com/platform/fdatafeed/otheraccount/v1"
+                 xmlns:ns4="http://schema.intuit.com/platform/fdatafeed/bankingaccount/v1"
+                 xmlns:ns5="http://schema.intuit.com/platform/fdatafeed/creditaccount/v1"
+                 xmlns:ns6="http://schema.intuit.com/platform/fdatafeed/loanaccount/v1"
+                 xmlns:ns7="http://schema.intuit.com/platform/fdatafeed/rewardsaccount/v1"
+                 xmlns:ns8="http://schema.intuit.com/platform/fdatafeed/accountlist/v1">
+  <ns3:BankingAccount>
+    <accountId>000000000001</accountId>
+    <accountNumber>000000000001</accountNumber>
+    <accountNickname>My Checking</accountNickname>
+    <displayPosition>1</displayPosition>
+    <institutionId>100000</institutionId>
+    <balanceAmount>1000</balanceAmount>
+    <aggrSuccessDate>2013-02-20T16:36:09.244-08:00</aggrSuccessDate>
+    <aggrAttemptDate>2013-02-20T16:36:09.244-08:00</aggrAttemptDate>
+    <aggrStatusCode>0</aggrStatusCode>
+    <currencyCode>USD</currencyCode>
+    <institutionLoginId>00000000001</institutionLoginId>
+    <ns4:bankingAccountType>CHECKING</ns4:bankingAccountType>
+  </ns3:BankingAccount>
+</ns8:AccountList>

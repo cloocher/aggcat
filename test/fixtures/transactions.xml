@@ -1,0 +1,33 @@
+<ns9:TransactionList xmlns="http://schema.intuit.com/platform/fdatafeed/transaction/v1"
+                     xmlns:ns2="http://schema.intuit.com/platform/fdatafeed/bnktransaction/v1"
+                     xmlns:ns3="http://schema.intuit.com/platform/fdatafeed/cctransaction/v1"
+                     xmlns:ns4="http://schema.intuit.com/platform/fdatafeed/ibnktransaction/v1"
+                     xmlns:ns5="http://schema.intuit.com/platform/fdatafeed/loantransaction/v1"
+                     xmlns:ns6="http://schema.intuit.com/platform/fdatafeed/invtransaction/v1"
+                     xmlns:ns7="http://schema.intuit.com/platform/fdatafeed/securityinfo/v1"
+                     xmlns:ns8="http://schema.intuit.com/platform/fdatafeed/rewardstransaction/v1"
+                     xmlns:ns9="http://schema.intuit.com/platform/fdatafeed/transactionlist/v1">
+  <ns3:CreditCardTransaction>
+    <id>75000088503</id>
+    <currencyType>USD</currencyType>
+    <institutionTransactionId>INTUIT-75000088503</institutionTransactionId>
+    <payeeName>Transaction 1.2</payeeName>
+    <postedDate>2012-08-22T00:00:00-06:00</postedDate>
+    <userDate>2012-08-22T00:00:00-06:00</userDate>
+    <amount>111.22</amount>
+    <pending>false</pending>
+    <categorization>
+      <common>
+        <normalizedPayeeName>Priceline.com</normalizedPayeeName>
+        <merchant>Priceline.com</merchant>
+        <sic>9995</sic>
+      </common>
+      <context>
+        <source>CAT</source>
+        <categoryName>CATEGORY</categoryName>
+        <contextType></contextType>
+        <scheduleC>Travel,Meals,Entertainment</scheduleC>
+      </context>
+    </categorization>
+  </ns3:CreditCardTransaction>
+</ns9:TransactionList>

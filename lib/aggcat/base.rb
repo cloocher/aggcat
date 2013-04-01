@@ -79,6 +79,7 @@ module Aggcat
     end
 
     def parse_xml(data)
+      return data if data.nil? || data.to_s.empty?
       @parser ||= Nori.new(:parser => :nokogiri,
                            :strip_namespaces => true,
                            :convert_tags_to => lambda { |tag| tag.snakecase.to_sym })
