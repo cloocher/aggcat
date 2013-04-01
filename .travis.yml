@@ -1,6 +1,6 @@
 language: ruby
 before_install:
-  - gem install bundler --pre
+  - gem install bundler
 rvm:
   - jruby-19mode
   - rbx-19mode
