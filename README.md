@@ -1,5 +1,5 @@
 # Aggcat
-[![Build Status](https://travis-ci.org/travis-ci/travis-web.png)](https://travis-ci.org/cloocher/aggcat)
+[![Build Status](https://travis-ci.org/cloocher/aggcat.png)](https://travis-ci.org/cloocher/aggcat)
 
   Intuit Customer Account Data API client
 
