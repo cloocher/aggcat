@@ -47,7 +47,7 @@ client = Aggcat::Client.new(
   customer_id: 'scope for all requests'
 )
 
-# scope Aggcat client by customer id
+# scope Aggcat client and all subsequent requests by customer id
 Aggcat.scope(customer_id)
 
 # get all supported financial institutions
@@ -62,7 +62,7 @@ Aggcat.discover_and_add_accounts(14007, username, password)
 # get already aggregated financial account
 Aggcat.account(account_id)
 
-# you can set scope inline
+# you can set scope inline for any request
 Aggcat.scope(customer1).account(account_id)
 
 # get all aggregated accounts
