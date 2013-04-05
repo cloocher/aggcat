@@ -42,11 +42,11 @@ module Aggcat
 
     def account_transactions(account_id, start_date, end_date = nil)
       validate(account_id: account_id, start_date: start_date)
-      uri = "/accounts/#{account_id}/transactions?txnStartDate=#{start_date.strftime(DATE_FORMAT)}"
+      path = "/accounts/#{account_id}/transactions?txnStartDate=#{start_date.strftime(DATE_FORMAT)}"
       if end_date
-        uri += "&txnEndDate=#{end_date.strftime(DATE_FORMAT)}"
+        path += "&txnEndDate=#{end_date.strftime(DATE_FORMAT)}"
       end
-      get(uri)
+      get(path)
     end
 
     def update_login(institution_id, login_id, username, password)
@@ -72,27 +72,27 @@ module Aggcat
 
     protected
 
-    def get(uri, headers = {})
-      request(:get, uri, headers)
+    def get(path, headers = {})
+      request(:get, path, headers)
     end
 
-    def post(uri, body, headers = {})
-      request(:post, uri, body, headers.merge({'Content-Type' => 'application/xml'}))
+    def post(path, body, headers = {})
+      request(:post, path, body, headers.merge({'Content-Type' => 'application/xml'}))
     end
 
-    def put(uri, body, headers = {})
-      request(:put, uri, body, headers.merge({'Content-Type' => 'application/xml'}))
+    def put(path, body, headers = {})
+      request(:put, path, body, headers.merge({'Content-Type' => 'application/xml'}))
     end
 
-    def delete(uri, headers = {})
-      request(:delete, uri, headers.merge({'Content-Type' => 'application/xml'}))
+    def delete(path, headers = {})
+      request(:delete, path, headers.merge({'Content-Type' => 'application/xml'}))
     end
 
     private
 
-    def request(method, uri, *options)
-      response = oauth_client.send(method.to_sym, BASE_URL + uri, *options)
-      result = {:response_code => response.code, :response => parse_xml(response.body)}
+    def request(method, path, *options)
+      response = oauth_client.send(method.to_sym, BASE_URL + path, *options)
+      result = {:status_code => response.code, :result => parse_xml(response.body)}
       if response['challengeSessionId']
         result[:challenge_session_id] = response['challengeSessionId']
         result[:challenge_node_id] = response['challengeNodeId']
@@ -110,7 +110,7 @@ module Aggcat
 
     def credentials(institution_id, username, password)
       institution = institution(institution_id)
-      keys = institution[:response][:institution_detail][:keys][:key].sort { |a, b| a[:display_order] <=> b[:display_order] }
+      keys = institution[:result][:institution_detail][:keys][:key].sort { |a, b| a[:display_order] <=> b[:display_order] }
       hash = {
           keys[0][:name] => username,
           keys[1][:name] => password
