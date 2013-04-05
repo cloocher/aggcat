@@ -68,7 +68,7 @@ module Aggcat
       signed_info = %[<ds:SignedInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/><ds:Reference URI="#_#{reference_id}"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>#{encoded_digest.strip}</ds:DigestValue></ds:Reference></ds:SignedInfo>]
       signature_value = Nokogiri::XML(signed_info).canonicalize
       key = OpenSSL::PKey::RSA.new(File.read(@certificate_path))
-      encoded_signature_value = Base64.encode64(key.sign(OpenSSL::Digest::SHA1.new, signature_value)).gsub!(/\n/, '')
+      encoded_signature_value = Base64.encode64(key.sign(OpenSSL::Digest::SHA1.new, signature_value)).gsub(/\n/, '')
       Base64.encode64(assertion % [encoded_digest, encoded_signature_value])
     end
 
