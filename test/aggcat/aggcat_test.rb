@@ -49,6 +49,6 @@ class AggcatTest < Test::Unit::TestCase
     Aggcat.scope('1')
     stub_get('/institutions').to_return(:body => fixture('institutions.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
     response = Aggcat.institutions
-    assert_equal response[:result][:institutions][:institution][0][:institution_id].to_i, 100000
+    assert_equal '100000', response[:result][:institutions][:institution][0][:institution_id]
   end
 end
