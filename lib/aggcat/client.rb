@@ -85,7 +85,7 @@ module Aggcat
     end
 
     def delete(path, headers = {})
-      request(:delete, path, headers.merge({'Content-Type' => 'application/xml'}))
+      request(:delete, path, headers)
     end
 
     private
