@@ -21,7 +21,7 @@ gem 'aggcat'
 
 ## Start Guide
 
-Register for [Customer Account Data](http://developer.intuit.com/agg-cat/index.html).
+Register for [Intuit Customer Account Data](http://developer.intuit.com/agg-cat/index.html).
 
 Get your OAuth data.
 
