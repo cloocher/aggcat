@@ -21,11 +21,11 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version     = '>= 1.9.2'
   spec.required_rubygems_version = '>= 1.3.6'
 
-  spec.add_dependency 'oauth', '~> 0.4'
-  spec.add_dependency 'nori', '~> 2.0'
-  spec.add_dependency 'nokogiri', '~> 1.5'
+  spec.add_dependency 'oauth', '>= 0.4'
+  spec.add_dependency 'nori', '>= 2.0'
+  spec.add_dependency 'nokogiri', '>= 1.5'
   spec.add_dependency 'builder', '>= 3.0'
-  spec.add_dependency 'active_support', '~> 3.0'
+  spec.add_dependency 'active_support', '>= 3.0'
 
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'bundler'
