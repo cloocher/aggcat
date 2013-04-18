@@ -5,8 +5,9 @@ module Aggcat
 
     def initialize(options={})
       raise ArgumentError.new('customer_id is required for scoping all requests') if options[:customer_id].nil? || options[:customer_id].to_s.empty?
+      options[:verbose] ||= false
       Aggcat::Configurable::KEYS.each do |key|
-        instance_variable_set(:"@#{key}", options[key] || Aggcat.instance_variable_get(:"@#{key}"))
+        instance_variable_set(:"@#{key}", !options[key].nil? ? options[key] : Aggcat.instance_variable_get(:"@#{key}"))
       end
     end
 
@@ -90,14 +91,22 @@ module Aggcat
 
     private
 
-    def request(method, path, *options)
-      response = oauth_client.send(method.to_sym, BASE_URL + path, *options)
-      result = {:status_code => response.code, :result => parse_xml(response.body)}
-      if response['challengeSessionId']
-        result[:challenge_session_id] = response['challengeSessionId']
-        result[:challenge_node_id] = response['challengeNodeId']
-      end
-      result
+    def request(http_method, path, *options)
+      tries = 0
+      begin
+        response = oauth_client.send(http_method, BASE_URL + path, *options)
+        result = {:status_code => response.code, :result => parse_xml(response.body)}
+        if response['challengeSessionId']
+          result[:challenge_session_id] = response['challengeSessionId']
+          result[:challenge_node_id] = response['challengeNodeId']
+        end
+        return result
+      rescue => e
+        raise e if tries >= 1
+        puts "failed to make API call - #{e.message}, retrying"
+        oauth_token(true)
+        tries += 1
+      end while tries == 1
     end
 
     def validate(args)

@@ -21,7 +21,8 @@ module Aggcat
     TIME_FORMAT = '%Y-%m-%dT%T.%LZ'
     DATE_FORMAT = '%Y-%m-%d'
 
-    TIMEOUT = 120
+    OPEN_TIMEOUT = 15
+    READ_TIMEOUT = 120
 
     protected
 
@@ -30,12 +31,12 @@ module Aggcat
     end
 
     def oauth_consumer
-      @oauth_consumer ||= OAuth::Consumer.new(@consumer_key, @consumer_secret, {:timeout => TIMEOUT})
+      @oauth_consumer ||= OAuth::Consumer.new(@consumer_key, @consumer_secret, {timeout: READ_TIMEOUT, open_timeout: OPEN_TIMEOUT, verbose: @verbose})
     end
 
-    def oauth_token
+    def oauth_token(force=false)
       now = Time.now
-      if @oauth_token.nil? || @oauth_token_expire_at <= now
+      if force || @oauth_token.nil? || @oauth_token_expire_at <= now
         @oauth_token = new_token(saml_message(@customer_id))
         @oauth_token_expire_at = now + 9 * 60 # 9 minutes
       end
@@ -50,7 +51,7 @@ module Aggcat
       request.set_form_data({:saml_assertion => message})
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      #http.set_debug_output($stdout)
+      http.set_debug_output($stdout) if @verbose
       response = http.request(request)
       params = CGI::parse(response.body)
       [params['oauth_token'][0], params['oauth_token_secret'][0]]
@@ -63,7 +64,7 @@ module Aggcat
       digest = Base64.encode64(OpenSSL::Digest::SHA1.digest(assertion)).strip
       signed_info = %[<ds:SignedInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></ds:CanonicalizationMethod><ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></ds:SignatureMethod><ds:Reference URI="#_#{reference_id}"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"></ds:Transform><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></ds:Transform></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></ds:DigestMethod><ds:DigestValue>#{digest}</ds:DigestValue></ds:Reference></ds:SignedInfo>]
       key = OpenSSL::PKey::RSA.new(File.read(@certificate_path))
-      signature_value = Base64.encode64(key.sign(OpenSSL::Digest::SHA1.new, signed_info)).gsub(/\n/, '')
+      signature_value = Base64.encode64(key.sign(OpenSSL::Digest::SHA1.new(nil), signed_info)).gsub(/\n/, '')
       signature = %[<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/><ds:Reference URI="#_#{reference_id}"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>#{digest}</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>#{signature_value}</ds:SignatureValue></ds:Signature>]
       assertion_with_signature = assertion.sub(/saml2:Issuer\>\<saml2:Subject/, "saml2:Issuer>#{signature}<saml2:Subject")
       Base64.encode64(assertion_with_signature)

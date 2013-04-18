@@ -1,9 +1,9 @@
 module Aggcat
   module Configurable
 
-    attr_writer :issuer_id, :consumer_key, :consumer_secret, :certificate_path, :customer_id
+    attr_writer :issuer_id, :consumer_key, :consumer_secret, :certificate_path, :customer_id, :verbose
 
-    KEYS = [:issuer_id, :consumer_key, :consumer_secret, :certificate_path, :customer_id]
+    KEYS = [:issuer_id, :consumer_key, :consumer_secret, :certificate_path, :customer_id, :verbose]
 
     def configure
       yield self

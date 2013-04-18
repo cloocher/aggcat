@@ -14,6 +14,15 @@ class ClientTest < Test::Unit::TestCase
     )
   end
 
+  def test_arguments
+    assert_equal 'issuer_id', @client.instance_variable_get(:'@issuer_id')
+    assert_equal 'consumer_key', @client.instance_variable_get(:'@consumer_key')
+    assert_equal 'consumer_secret', @client.instance_variable_get(:'@consumer_secret')
+    assert_equal "#{fixture_path}/cert.key", @client.instance_variable_get(:'@certificate_path')
+    assert_equal 'default', @client.instance_variable_get(:'@customer_id')
+    assert_equal false, @client.instance_variable_get(:'@verbose')
+  end
+
   def test_institutions
     stub_get('/institutions').to_return(:body => fixture('institutions.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
     response = @client.institutions
@@ -189,6 +198,19 @@ class ClientTest < Test::Unit::TestCase
     end
     stub_put("/logins/#{login_id}?refresh=true").to_return(:body => validator)
     @client.update_login_confirmation(login_id, challenge_session_id, challenge_node_id, answer)
+  end
+
+  def test_retry_success
+    institution_id = '100000'
+    stub_get("/institutions/#{institution_id}").to_timeout.times(1).then.to_return(:body => fixture('institution.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
+    response = @client.institution(institution_id)
+    assert_equal institution_id, response[:result][:institution_detail][:institution_id]
+  end
+
+  def test_retry_failure
+    institution_id = '100000'
+    stub_get("/institutions/#{institution_id}").to_timeout.times(2)
+    assert_raise(Timeout::Error) { @client.institution(institution_id) }
   end
 
 end
