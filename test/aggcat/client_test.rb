@@ -179,9 +179,9 @@ class ClientTest < Test::Unit::TestCase
     challenge_session_id = '1234'
     challenge_node_id = '4321'
     answer = 'answer'
-    parser = Nori.new(:parser => :nokogiri, :strip_namespaces => true, :convert_tags_to => lambda { |tag| tag.snakecase.to_sym })
+    parser = XmlHasher::Parser.new(snakecase: true, ignore_namespaces: true)
     stub_get("/institutions/#{institution_id}").to_return(:body => fixture('institution.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
-    stub_post("/institutions/#{institution_id}/logins").to_return(:body => lambda { |request| assert_equal(parser.parse(fixture('challenge.xml').read), parser.parse(request.body)) })
+    stub_post("/institutions/#{institution_id}/logins").to_return(:body => lambda { |request| assert_equal(parser.parse(fixture('challenge.xml')), parser.parse(request.body)) })
     @client.account_confirmation(institution_id, challenge_session_id, challenge_node_id, answer)
   end
 
@@ -191,8 +191,8 @@ class ClientTest < Test::Unit::TestCase
     challenge_node_id = '4321'
     answer = 'answer'
     validator = lambda do |request|
-      parser = Nori.new(:parser => :nokogiri, :strip_namespaces => true, :convert_tags_to => lambda { |tag| tag.snakecase.to_sym })
-      assert_equal(parser.parse(fixture('challenge.xml').read), parser.parse(request.body))
+      parser = XmlHasher::Parser.new(snakecase: true, ignore_namespaces: true)
+      assert_equal(parser.parse(fixture('challenge.xml')), parser.parse(request.body))
       assert_equal(challenge_session_id, request.headers['Challengesessionid'])
       assert_equal(challenge_node_id, request.headers['Challengenodeid'])
     end

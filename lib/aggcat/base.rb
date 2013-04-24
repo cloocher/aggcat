@@ -4,10 +4,10 @@ require 'base64'
 require 'cgi'
 require 'net/https'
 require 'nokogiri'
-require 'nori'
 require 'oauth'
 require 'openssl'
 require 'securerandom'
+require 'xmlhasher'
 require 'uri'
 
 module Aggcat
@@ -76,21 +76,8 @@ module Aggcat
 
     def parse_xml(data)
       return data if data.nil? || data.to_s.empty?
-      @parser ||= Nori.new(:parser => :nokogiri,
-                           :strip_namespaces => true,
-                           :convert_tags_to => lambda { |tag| tag.snakecase.to_sym })
-      cleanup(@parser.parse(data))
-    end
-
-    def cleanup(hash)
-      hash.each do |k, v|
-        if k.to_s[/^@xmlns/]
-          hash.delete(k)
-        elsif v.respond_to?(:keys)
-          cleanup(v)
-        end
-      end
-      hash
+      @parser ||= XmlHasher::Parser.new(snakecase: true, ignore_namespaces: true)
+      @parser.parse(data)
     end
   end
 end
