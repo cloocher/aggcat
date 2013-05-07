@@ -68,8 +68,10 @@ module Aggcat
     end
 
     def delete_customer
-      accounts[:result][:account_list].values.flatten.each do |account|
-        delete_account(account[:account_id])
+      if accounts[:result][:account_list]
+        accounts[:result][:account_list].values.flatten.each do |account|
+          delete_account(account[:account_id])
+        end
       end
       delete('/customers')
     end
