@@ -26,10 +26,10 @@ module Aggcat
       post("/institutions/#{institution_id}/logins", body)
     end
 
-    def account_confirmation(institution_id, challenge_session_id, challenge_node_id, answer)
-      validate(institution_id: institution_id, challenge_node_id: challenge_session_id, challenge_node_id: challenge_node_id, answer: answer)
+    def account_confirmation(institution_id, challenge_session_id, challenge_node_id, answers)
+      validate(institution_id: institution_id, challenge_node_id: challenge_session_id, challenge_node_id: challenge_node_id, answers: answers)
       headers = {'challengeSessionId' => challenge_session_id, 'challengeNodeId' => challenge_node_id}
-      post("/institutions/#{institution_id}/logins", challenge_answer(answer), headers)
+      post("/institutions/#{institution_id}/logins", challenge_answer(answers), headers)
     end
 
     def accounts
@@ -56,10 +56,10 @@ module Aggcat
       put("/logins/#{login_id}?refresh=true", body)
     end
 
-    def update_login_confirmation(login_id, challenge_session_id, challenge_node_id, answer)
-      validate(login_id: login_id, challenge_node_id: challenge_session_id, challenge_node_id: challenge_node_id, answer: answer)
-      headers = {challengeSessionId: challenge_session_id, challengeNodeId: challenge_node_id}
-      put("/logins/#{login_id}?refresh=true", challenge_answer(answer), headers)
+    def update_login_confirmation(login_id, challenge_session_id, challenge_node_id, answers)
+      validate(login_id: login_id, challenge_node_id: challenge_session_id, challenge_node_id: challenge_node_id, answers: answers)
+      headers = {'challengeSessionId' => challenge_session_id, 'challengeNodeId' => challenge_node_id}
+      put("/logins/#{login_id}?refresh=true", challenge_answer(answers), headers)
     end
 
     def delete_account(account_id)
@@ -143,14 +143,19 @@ module Aggcat
       end
     end
 
-    def challenge_answer(answer)
+    def challenge_answer(answers)
       xml = Builder::XmlMarkup.new
       xml.InstitutionLogin('xmlns' => LOGIN_NAMESPACE) do |login|
         login.challengeResponses do |challenge|
-          challenge.response(answer, 'xmlns' => CHALLENGE_NAMESPACE)
+          if answers.respond_to?('each')
+            answers.each { |answer| challenge.response(answer, 'xmlns' => CHALLENGE_NAMESPACE) }
+          else
+            challenge.response(answers, 'xmlns' => CHALLENGE_NAMESPACE)
+          end
         end
       end
     end
+
   end
 end
 
