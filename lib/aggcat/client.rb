@@ -28,7 +28,7 @@ module Aggcat
 
     def account_confirmation(institution_id, challenge_session_id, challenge_node_id, answer)
       validate(institution_id: institution_id, challenge_node_id: challenge_session_id, challenge_node_id: challenge_node_id, answer: answer)
-      headers = {challengeSessionId: challenge_session_id, challengeNodeId: challenge_node_id}
+      headers = {'challengeSessionId' => challenge_session_id, 'challengeNodeId' => challenge_node_id}
       post("/institutions/#{institution_id}/logins", challenge_answer(answer), headers)
     end
 
@@ -145,9 +145,9 @@ module Aggcat
 
     def challenge_answer(answer)
       xml = Builder::XmlMarkup.new
-      xml.InstitutionLogin('xmlns:v1' => LOGIN_NAMESPACE) do |login|
+      xml.InstitutionLogin('xmlns' => LOGIN_NAMESPACE) do |login|
         login.challengeResponses do |challenge|
-          challenge.response(answer, 'xmlns:v11' => CHALLENGE_NAMESPACE)
+          challenge.response(answer, 'xmlns' => CHALLENGE_NAMESPACE)
         end
       end
     end
