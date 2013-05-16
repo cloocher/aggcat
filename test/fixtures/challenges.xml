@@ -1,0 +1,6 @@
+<InstitutionLogin xmlns:v1="http://schema.intuit.com/platform/fdatafeed/institutionlogin/v1">
+  <challengeResponses>
+    <response xmlns:v11="http://schema.intuit.com/platform/fdatafeed/challenge/v1">answer1</response>
+    <response xmlns:v11="http://schema.intuit.com/platform/fdatafeed/challenge/v1">answer2</response>
+  </challengeResponses>
+</InstitutionLogin>

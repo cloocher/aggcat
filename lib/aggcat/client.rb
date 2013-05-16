@@ -29,7 +29,7 @@ module Aggcat
     def account_confirmation(institution_id, challenge_session_id, challenge_node_id, answers)
       validate(institution_id: institution_id, challenge_node_id: challenge_session_id, challenge_node_id: challenge_node_id, answers: answers)
       headers = {'challengeSessionId' => challenge_session_id, 'challengeNodeId' => challenge_node_id}
-      post("/institutions/#{institution_id}/logins", challenge_answer(answers), headers)
+      post("/institutions/#{institution_id}/logins", challenge_answers(answers), headers)
     end
 
     def accounts
@@ -59,7 +59,7 @@ module Aggcat
     def update_login_confirmation(login_id, challenge_session_id, challenge_node_id, answers)
       validate(login_id: login_id, challenge_node_id: challenge_session_id, challenge_node_id: challenge_node_id, answers: answers)
       headers = {'challengeSessionId' => challenge_session_id, 'challengeNodeId' => challenge_node_id}
-      put("/logins/#{login_id}?refresh=true", challenge_answer(answers), headers)
+      put("/logins/#{login_id}?refresh=true", challenge_answers(answers), headers)
     end
 
     def delete_account(account_id)
@@ -143,14 +143,12 @@ module Aggcat
       end
     end
 
-    def challenge_answer(answers)
+    def challenge_answers(answers)
       xml = Builder::XmlMarkup.new
       xml.InstitutionLogin('xmlns' => LOGIN_NAMESPACE) do |login|
         login.challengeResponses do |challenge|
-          if answers.respond_to?('each')
-            answers.each { |answer| challenge.response(answer, 'xmlns' => CHALLENGE_NAMESPACE) }
-          else
-            challenge.response(answers, 'xmlns' => CHALLENGE_NAMESPACE)
+          [answers].flatten.each do |answer|
+            challenge.response(answer, 'xmlns' => CHALLENGE_NAMESPACE)
           end
         end
       end

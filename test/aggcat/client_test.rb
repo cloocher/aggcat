@@ -189,6 +189,17 @@ class ClientTest < Test::Unit::TestCase
     @client.account_confirmation(institution_id, challenge_session_id, challenge_node_id, answer)
   end
 
+  def test_account_confirmation_multi_answer
+    institution_id = '100000'
+    challenge_session_id = '1234'
+    challenge_node_id = '4321'
+    answers = ['answer1', 'answer2']
+    parser = XmlHasher::Parser.new(snakecase: true, ignore_namespaces: true)
+    stub_get("/institutions/#{institution_id}").to_return(:body => fixture('institution.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
+    stub_post("/institutions/#{institution_id}/logins").to_return(:body => lambda { |request| assert_equal(parser.parse(fixture('challenges.xml')), parser.parse(request.body)) })
+    @client.account_confirmation(institution_id, challenge_session_id, challenge_node_id, answers)
+  end
+
   def test_update_login_confirmation
     login_id = '1234567890'
     challenge_session_id = '1234'
@@ -202,6 +213,21 @@ class ClientTest < Test::Unit::TestCase
     end
     stub_put("/logins/#{login_id}?refresh=true").to_return(:body => validator)
     @client.update_login_confirmation(login_id, challenge_session_id, challenge_node_id, answer)
+  end
+
+  def test_update_login_confirmation_multi_answers
+    login_id = '1234567890'
+    challenge_session_id = '1234'
+    challenge_node_id = '4321'
+    answers = ['answer1', 'answer2']
+    validator = lambda do |request|
+      parser = XmlHasher::Parser.new(snakecase: true, ignore_namespaces: true)
+      assert_equal(parser.parse(fixture('challenges.xml')), parser.parse(request.body))
+      assert_equal(challenge_session_id, request.headers['Challengesessionid'])
+      assert_equal(challenge_node_id, request.headers['Challengenodeid'])
+    end
+    stub_put("/logins/#{login_id}?refresh=true").to_return(:body => validator)
+    @client.update_login_confirmation(login_id, challenge_session_id, challenge_node_id, answers)
   end
 
   def test_retry_success
