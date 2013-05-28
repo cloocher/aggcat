@@ -31,7 +31,7 @@ module Aggcat
     end
 
     def oauth_consumer
-      @oauth_consumer ||= OAuth::Consumer.new(@consumer_key, @consumer_secret, {timeout: READ_TIMEOUT, open_timeout: OPEN_TIMEOUT, verbose: @verbose})
+      @oauth_consumer ||= OAuth::Consumer.new(@consumer_key, @consumer_secret, {timeout: @read_timeout, open_timeout: @open_timeout, verbose: @verbose})
     end
 
     def oauth_token(force=false)
