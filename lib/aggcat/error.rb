@@ -1,7 +1,7 @@
 class AggcatError < StandardError
   attr_accessor :code, :message
   def initialize code
-    self.code = code
+    self.code = code.to_i
 
     codes = {
       200 => "If the call is successful, then the HTTP response code is 200 and the XML response does not include the Error element. Note:  Even if the response code is 200, an error might have been detected by Data Services for QuickBooks Desktop.  In this case, the XML response includes an Error element.  The following sections on this page provide details about the Error element.",
@@ -105,6 +105,6 @@ class AggcatError < StandardError
       192 => "Unsupported multi-factor authentication(MFA) protocol."
     }
 
-    self.message = "#{code} #{codes[code.to_i]}"
+    self.message = codes[self.code]
   end
 end
