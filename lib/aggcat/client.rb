@@ -22,9 +22,9 @@ module Aggcat
       get("/institutions/#{institution_id}")
     end
 
-    def discover_and_add_accounts(institution_id, username, password)
+    def discover_and_add_accounts(institution_id, username, password, username_key=nil, password_key=nil)
       validate(institution_id: institution_id, username: username, password: password)
-      body = credentials(institution_id, username, password)
+      body = credentials(institution_id, username, password, username_key, password_key)
       post("/institutions/#{institution_id}/logins", body)
     end
 
@@ -52,9 +52,9 @@ module Aggcat
       get(path)
     end
 
-    def update_login(institution_id, login_id, username, password)
+    def update_login(institution_id, login_id, username, password, username_key=nil, password_key=nil)
       validate(institution_id: institution_id, login_id: login_id, username: username, password: password)
-      body = credentials(institution_id, username, password)
+      body = credentials(institution_id, username, password, username_key=nil, password_key=nil)
       put("/logins/#{login_id}?refresh=true", body)
     end
 
@@ -107,6 +107,7 @@ module Aggcat
           result[:challenge_session_id] = response['challengeSessionId']
           result[:challenge_node_id] = response['challengeNodeId']
         end
+        raise AggcatError.new response.code if response.code.to_i < 200 || response.code.to_i >= 400
         return result
       rescue => e
         raise e if tries >= 1
@@ -124,12 +125,17 @@ module Aggcat
       end
     end
 
-    def credentials(institution_id, username, password)
-      institution = institution(institution_id)
-      keys = institution[:result][:institution_detail][:keys][:key].sort { |a, b| a[:display_order] <=> b[:display_order] }
+    def credentials(institution_id, username, password,username_key=nil, password_key=nil)
+      if username_key.nil?
+        institution = institution(institution_id)
+        keys = institution[:result][:institution_detail][:keys][:key].sort { |a, b| a[:display_order] <=> b[:display_order] }
+        username_key = keys[0][:name]
+        password_key = keys[1][:name]
+      end
+      
       hash = {
-          keys[0][:name] => username,
-          keys[1][:name] => password
+          username_key => username,
+          password_key => password
       }
 
       xml = Builder::XmlMarkup.new

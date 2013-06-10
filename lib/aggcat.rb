@@ -1,3 +1,4 @@
+require 'aggcat/error.rb'
 require 'aggcat/version'
 require 'aggcat/configurable'
 require 'aggcat/base'
