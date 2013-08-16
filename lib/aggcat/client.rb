@@ -126,7 +126,7 @@ module Aggcat
 
     def credentials(institution_id, username, password)
       institution = institution(institution_id)
-      raise ArgumentError.new("institution_id #{institution_id} is invalid") if institution.nil?
+      raise ArgumentError.new("institution_id #{institution_id} is invalid") if institution.nil? || institution[:result][:institution_detail].empty?
       keys = institution[:result][:institution_detail][:keys][:key].sort { |a, b| a[:display_order] <=> b[:display_order] }
       hash = {
           keys[0][:name] => username,
