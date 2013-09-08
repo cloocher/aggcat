@@ -70,7 +70,11 @@ module Aggcat
     end
 
     def delete_customer
-      delete('/customers')
+      result = delete('/customers')
+      if result[:status_code] == '200'
+        @oauth_token = nil
+      end
+      result
     end
 
     protected

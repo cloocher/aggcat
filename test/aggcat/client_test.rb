@@ -147,6 +147,7 @@ class ClientTest < Test::Unit::TestCase
     stub_delete('/customers').to_return(:status => 200)
     response = @client.delete_customer
     assert_equal '200', response[:status_code]
+    assert_nil @client.instance_variable_get('@oauth_token')
   end
 
   def test_update_login
