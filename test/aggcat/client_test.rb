@@ -144,13 +144,10 @@ class ClientTest < Test::Unit::TestCase
 
   def test_delete_customer
     stub_get('/accounts').to_return(:body => fixture('accounts.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
-    account_ids = %w(75000033002 75000032995 75000033014 75000033009 75000033017 75000033013 75000033000 75000033003 75000033020 75000033010 75000033018 75000033007 75000033006 75000033008 75000032998 75000033001 75000033012 75000033019 75000033016 75000033015 75000032999 75000032997 75000032996 75000033004 75000033005 75000033021 75000033011)
-    account_ids.each do |account_id|
-      stub_delete("/accounts/#{account_id}").to_return(:status => 200)
-    end
     stub_delete('/customers').to_return(:status => 200)
     response = @client.delete_customer
     assert_equal '200', response[:status_code]
+    assert_nil @client.instance_variable_get('@oauth_token')
   end
 
   def test_update_login
