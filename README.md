@@ -46,40 +46,78 @@ client = Aggcat::Client.new(
   certificate_path: '/path/to/your/certificate/key',
   customer_id: 'scope for all requests'
 )
+```
 
-# scope Aggcat client and all subsequent requests by customer id
-Aggcat.scope(customer_id)
+### Playing with the API
+
+It is recommend to take a look at the [API Use cases](https://developer.intuit.com/docs/0020_customeraccountdata/customer_account_data_api/0005_key_concepts).
+
+There are several testing accounts provided by Intuit: [Testing Calls to the API](https://developer.intuit.com/docs/0020_customeraccountdata/customer_account_data_api/testing_calls_to_the_api).
+
+
+#### Get institutions details
+
+```ruby
+# create an scope for a client
+customer_id = 1
+@scope = Aggcat.scope(customer_id)
 
 # get all supported financial institutions
-Aggcat.institutions
+@scope.institutions
 
 # get details for Bank of America
-Aggcat.institution(14007)
+@scope.institution(14007)
+```
 
+#### Discovering accounts
+
+```ruby
 # add new financial account to aggregate from Bank of America
-Aggcat.discover_and_add_accounts(14007, username, password)
+result = @scope.discover_and_add_accounts(14007, username, password)
+puts result
 
+# if MFA is needed, you need to answers the challenges
+challenges = result[:result][:challenges]
+answers = ['first_answer', 'second_answer']
+result = @scope.account_confirmation(14007, result[:challenge_session_id], result[:challenge_node_id], answers)
+```
+
+#### Retrieving accounts and transactions
+
+```ruby
 # get already aggregated financial account
-Aggcat.account(account_id)
+@scope.account(account_id)
 
+# get all aggregated accounts
+@scope.accounts
+
+# get account transactions
+start_date = Time.now - 2.month
+end_date = Time.now - 1.month    # optional
+@scope.account_transactions(account_id, start_date, end_date)
+```
+
+#### Updating login
+
+```ruby
+# update login credentials
+@scope.update_login(institution_id, login_id, new_username, new_password)
+
+# if MFA is needed, you need to answers the challenges
+@scope.update_login_confirmation(institution_id, challenge_session_id, challenge_node_id, answers)
+```
+
+#### Other
+
+```ruby
 # you can set scope inline for any request
 Aggcat.scope(customer1).account(account_id)
 
-# get all aggregated accounts
-Aggcat.accounts
-
-# update login credentials
-Aggcat.update_login(institution_id, login_id, new_username, new_password)
-
 # delete account
-Aggcat.delete_account(account_id)
-
-# get account transactions
-Aggcat.account_transactions(account_id, start_date, end_date)
+@scope.delete_account(account_id)
 
 # delete customer for the current scope
-Aggcat.delete_customer
-
+@scope.delete_customer
 ```
 
 ## Documentation
