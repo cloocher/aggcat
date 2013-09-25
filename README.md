@@ -27,7 +27,7 @@ Get your OAuth data.
 
 Take a look at the [API Use cases](https://developer.intuit.com/docs/0020_customeraccountdata/customer_account_data_api/0005_key_concepts).
 
-[Test accounts](https://developer.intuit.com/docs/0020_customeraccountdata/customer_account_data_api/testing_calls_to_the_api).
+[Testing Calls to the API](https://developer.intuit.com/docs/0020_customeraccountdata/customer_account_data_api/testing_calls_to_the_api).
 
 ## Usage
 
