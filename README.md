@@ -25,10 +25,6 @@ Register for [Intuit Customer Account Data](https://developer.intuit.com/docs/00
 
 Get your OAuth data.
 
-Take a look at the [API Use cases](https://developer.intuit.com/docs/0020_customeraccountdata/customer_account_data_api/0005_key_concepts).
-
-[Testing Calls to the API](https://developer.intuit.com/docs/0020_customeraccountdata/customer_account_data_api/testing_calls_to_the_api).
-
 ## Usage
 
 ```ruby
@@ -100,6 +96,10 @@ client.delete_customer
 ## Documentation
 
 Please make sure to read Intuit's [Account Data API](http://docs.developer.intuit.com/0020_Aggregation_Categorization_Apps/AggCat_API/0020_API_Documentation) docs.
+
+[API Use Cases](https://developer.intuit.com/docs/0020_customeraccountdata/customer_account_data_api/0005_key_concepts).
+
+[Testing Calls to the API](https://developer.intuit.com/docs/0020_customeraccountdata/customer_account_data_api/testing_calls_to_the_api).
 
 ## Requirements
 
