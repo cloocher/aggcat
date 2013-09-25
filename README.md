@@ -55,69 +55,51 @@ It is recommend to take a look at the [API Use cases](https://developer.intuit.c
 There are several testing accounts provided by Intuit: [Testing Calls to the API](https://developer.intuit.com/docs/0020_customeraccountdata/customer_account_data_api/testing_calls_to_the_api).
 
 
-#### Get institutions details
-
 ```ruby
 # create an scope for a client
-customer_id = 1
-@scope = Aggcat.scope(customer_id)
+scoped_client = Aggcat.scope(customer_id)
 
 # get all supported financial institutions
-@scope.institutions
+scoped_client.institutions
 
 # get details for Bank of America
-@scope.institution(14007)
-```
+scoped_client.institution(14007)
 
-#### Discovering accounts
-
-```ruby
 # add new financial account to aggregate from Bank of America
-result = @scope.discover_and_add_accounts(14007, username, password)
-puts result
+response = scoped_client.discover_and_add_accounts(14007, username, password)
 
-# if MFA is needed, you need to answers the challenges
-challenges = result[:result][:challenges]
-answers = ['first_answer', 'second_answer']
-result = @scope.account_confirmation(14007, result[:challenge_session_id], result[:challenge_node_id], answers)
-```
+# in case MFA is required
+questions = response[:result][:challenges]
+answers = ['first answer', 'second answer']
+challenge_session_id = response[:challenge_session_id]
+challenge_node_id = response[:challenge_node_id]
+scoped_client.account_confirmation(14007, challenge_session_id, challenge_node_id, answers)
 
-#### Retrieving accounts and transactions
-
-```ruby
 # get already aggregated financial account
-@scope.account(account_id)
+scoped_client.account(account_id)
 
 # get all aggregated accounts
-@scope.accounts
+scoped_client.accounts
 
 # get account transactions
-start_date = Time.now - 2.month
-end_date = Time.now - 1.month    # optional
-@scope.account_transactions(account_id, start_date, end_date)
-```
+start_date = Date.today - 30
+end_date = Date.today # optional
+scoped_client.account_transactions(account_id, start_date, end_date)
 
-#### Updating login
-
-```ruby
 # update login credentials
-@scope.update_login(institution_id, login_id, new_username, new_password)
+scoped_client.update_login(institution_id, login_id, new_username, new_password)
 
-# if MFA is needed, you need to answers the challenges
-@scope.update_login_confirmation(institution_id, challenge_session_id, challenge_node_id, answers)
-```
+# in case MFA is required
+scoped_client.update_login_confirmation(institution_id, challenge_session_id, challenge_node_id, answers)
 
-#### Other
-
-```ruby
 # you can set scope inline for any request
-Aggcat.scope(customer1).account(account_id)
+Aggcat.scope(customer_id).account(account_id)
 
 # delete account
-@scope.delete_account(account_id)
+scoped_account.delete_account(account_id)
 
 # delete customer for the current scope
-@scope.delete_customer
+scoped_account.delete_customer
 ```
 
 ## Documentation
