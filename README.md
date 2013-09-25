@@ -25,6 +25,10 @@ Register for [Intuit Customer Account Data](https://developer.intuit.com/docs/00
 
 Get your OAuth data.
 
+Take a look at the [API Use cases](https://developer.intuit.com/docs/0020_customeraccountdata/customer_account_data_api/0005_key_concepts).
+
+[Test accounts](https://developer.intuit.com/docs/0020_customeraccountdata/customer_account_data_api/testing_calls_to_the_api).
+
 ## Usage
 
 ```ruby
@@ -46,16 +50,7 @@ client = Aggcat::Client.new(
   certificate_path: '/path/to/your/certificate/key',
   customer_id: 'scope for all requests'
 )
-```
 
-### Playing with the API
-
-Take a look at the [API Use cases](https://developer.intuit.com/docs/0020_customeraccountdata/customer_account_data_api/0005_key_concepts).
-
-There are several test accounts provided by Intuit: [Testing Calls to the API](https://developer.intuit.com/docs/0020_customeraccountdata/customer_account_data_api/testing_calls_to_the_api).
-
-
-```ruby
 # create an scope for a client
 scoped_client = Aggcat.scope(customer_id)
 
