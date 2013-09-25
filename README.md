@@ -51,50 +51,50 @@ client = Aggcat::Client.new(
   customer_id: 'scope for all requests'
 )
 
-# create an scope for a client
-scoped_client = Aggcat.scope(customer_id)
+# create an scoped client by customer_id
+client = Aggcat.scope(customer_id)
 
 # get all supported financial institutions
-scoped_client.institutions
+client.institutions
 
 # get details for Bank of America
-scoped_client.institution(14007)
+client.institution(14007)
 
 # add new financial account to aggregate from Bank of America
-response = scoped_client.discover_and_add_accounts(14007, username, password)
+response = client.discover_and_add_accounts(14007, username, password)
 
 # in case MFA is required
 questions = response[:result][:challenges]
 answers = ['first answer', 'second answer']
 challenge_session_id = response[:challenge_session_id]
 challenge_node_id = response[:challenge_node_id]
-scoped_client.account_confirmation(14007, challenge_session_id, challenge_node_id, answers)
+client.account_confirmation(14007, challenge_session_id, challenge_node_id, answers)
 
 # get already aggregated financial account
-scoped_client.account(account_id)
+client.account(account_id)
 
 # get all aggregated accounts
-scoped_client.accounts
+client.accounts
 
 # get account transactions
 start_date = Date.today - 30
 end_date = Date.today # optional
-scoped_client.account_transactions(account_id, start_date, end_date)
+client.account_transactions(account_id, start_date, end_date)
 
 # update login credentials
-scoped_client.update_login(institution_id, login_id, new_username, new_password)
+client.update_login(institution_id, login_id, new_username, new_password)
 
 # in case MFA is required
-scoped_client.update_login_confirmation(institution_id, challenge_session_id, challenge_node_id, answers)
+client.update_login_confirmation(institution_id, challenge_session_id, challenge_node_id, answers)
 
 # you can set scope inline for any request
 Aggcat.scope(customer_id).account(account_id)
 
 # delete account
-scoped_account.delete_account(account_id)
+client.delete_account(account_id)
 
 # delete customer for the current scope
-scoped_account.delete_customer
+client.delete_customer
 ```
 
 ## Documentation
