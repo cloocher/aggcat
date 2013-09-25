@@ -50,9 +50,9 @@ client = Aggcat::Client.new(
 
 ### Playing with the API
 
-It is recommend to take a look at the [API Use cases](https://developer.intuit.com/docs/0020_customeraccountdata/customer_account_data_api/0005_key_concepts).
+Take a look at the [API Use cases](https://developer.intuit.com/docs/0020_customeraccountdata/customer_account_data_api/0005_key_concepts).
 
-There are several testing accounts provided by Intuit: [Testing Calls to the API](https://developer.intuit.com/docs/0020_customeraccountdata/customer_account_data_api/testing_calls_to_the_api).
+There are several test accounts provided by Intuit: [Testing Calls to the API](https://developer.intuit.com/docs/0020_customeraccountdata/customer_account_data_api/testing_calls_to_the_api).
 
 
 ```ruby
