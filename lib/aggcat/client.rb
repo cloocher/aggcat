@@ -52,6 +52,11 @@ module Aggcat
       get(path)
     end
 
+    def login_accounts(login_id)
+      validate(login_id: login_id)
+      get("/logins/#{login_id}/accounts")
+    end
+
     def update_login(institution_id, login_id, username, password)
       validate(institution_id: institution_id, login_id: login_id, username: username, password: password)
       body = credentials(institution_id, username, password)

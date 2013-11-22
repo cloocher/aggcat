@@ -150,6 +150,20 @@ class ClientTest < Test::Unit::TestCase
     assert_nil @client.instance_variable_get('@oauth_token')
   end
 
+  def test_login_accounts
+    login_id = '147630161'
+    stub_get("/logins/#{login_id}/accounts").to_return(:body => fixture('accounts.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
+    response = @client.login_accounts(login_id)
+    assert_equal '200', response[:status_code]
+  end
+
+  def test_login_accounts_bad_args
+    [nil, ''].each do |arg|
+      exception = assert_raise(ArgumentError) { @client.login_accounts(arg) }
+      assert_equal('login_id is required', exception.message)
+    end
+  end
+
   def test_update_login
     institution_id = '100000'
     login_id = '12345'
