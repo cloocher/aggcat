@@ -69,6 +69,12 @@ module Aggcat
       put("/logins/#{login_id}?refresh=true", challenge_answers(answers), headers)
     end
 
+    def update_account_type(account_id, type)
+      validate(account_id: account_id, type: type)
+      body = account_type(type)
+      put("/accounts/#{account_id}", body)
+    end
+
     def delete_account(account_id)
       validate(account_id: account_id)
       delete("/accounts/#{account_id}")
@@ -161,6 +167,30 @@ module Aggcat
       end
     end
 
+    def account_type(type)
+      xml = Builder::XmlMarkup.new
+      if ['CHECKING', 'SAVINGS', 'MONEYMRKT', 'RECURRINGDEPOSIT', 'CD', 'CASHMANAGEMENT', 'OVERDRAFT'].include?(type)
+        xml.tag!('ns4:BankingAccount', {'xmlns:ns4' => BANKING_ACCOUNT_NAMESPACE}) do
+          xml.tag!('ns4:bankingAccountType', type)
+        end
+      elsif ['CREDITCARD', 'LINEOFCREDIT', 'OTHER'].include?(type)
+        xml.tag!('ns4:CreditAccount', {'xmlns:ns4' => CREDIT_ACCOUNT_NAMESPACE}) do
+          xml.tag!('ns4:creditAccountType', type)
+        end
+      elsif ['LOAN', 'AUTO', 'COMMERCIAL', 'CONSTR', 'CONSUMER', 'HOMEEQUITY', 'MILITARY', 'MORTGAGE', 'SMB', 'STUDENT'].include?(type)
+        xml.tag!('ns4:Loan', {'xmlns:ns4' => LOAN_NAMESPACE}) do
+          xml.tag!('ns4:loanType', type)
+        end
+      elsif ['TAXABLE', '401K', 'BROKERAGE', 'IRA', '403B', 'KEOGH', 'TRUST', 'TDA', 'SIMPLE', 'NORMAL', 'SARSEP', 'UGMA', 'OTHER'].include?(type)
+        xml.tag!('ns4:InvestmentAccount', {'xmlns:ns4' => INVESTMENT_ACCOUNT_NAMESPACE}) do
+          xml.tag!('ns4:investmentAccountType', type)
+        end
+      else
+        xml.tag!('ns4:RewardAccount', {'xmlns:ns4' => REWARD_ACCOUNT_NAMESPACE}) do
+          xml.tag!('ns4:rewardAccountType')
+        end
+      end
+    end
   end
 end
 

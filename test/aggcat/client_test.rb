@@ -128,6 +128,24 @@ class ClientTest < Test::Unit::TestCase
     end
   end
 
+  def test_update_account_type
+    account_id = '000000000001'
+    type = 'ANOTHER'
+    stub_put("/accounts/#{account_id}").to_return(:status => 200)
+    response = @client.update_account_type(account_id, type)
+    assert_equal '200', response[:status_code]
+  end
+
+  def test_update_account_type_bad_args
+    [nil, ''].each do |arg|
+      exception = assert_raise(ArgumentError) { @client.update_account_type(arg, 'CREDITCARD') }
+      assert_equal('account_id is required', exception.message)
+
+      exception = assert_raise(ArgumentError) { @client.update_account_type(1, arg) }
+      assert_equal('type is required', exception.message)
+    end
+  end
+
   def test_delete_account
     account_id = '000000000001'
     stub_delete("/accounts/#{account_id}").to_return(:status => 200)
