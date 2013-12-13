@@ -16,6 +16,11 @@ module Aggcat
 
     LOGIN_NAMESPACE = 'http://schema.intuit.com/platform/fdatafeed/institutionlogin/v1'
     CHALLENGE_NAMESPACE = 'http://schema.intuit.com/platform/fdatafeed/challenge/v1'
+    BANKING_ACCOUNT_NAMESPACE = 'http://schema.intuit.com/platform/fdatafeed/bankingaccount/v1'
+    CREDIT_ACCOUNT_NAMESPACE = 'http://schema.intuit.com/platform/fdatafeed/creditaccount/v1'
+    LOAN_NAMESPACE = 'http://schema.intuit.com/platform/fdatafeed/loan/v1'
+    INVESTMENT_ACCOUNT_NAMESPACE = 'http://schema.intuit.com/platform/fdatafeed/investmentaccount/v1'
+    REWARD_ACCOUNT_NAMESPACE = 'http://schema.intuit.com/platform/fdatafeed/rewardsaccount/v1'
 
     TIME_FORMAT = '%Y-%m-%dT%T.%LZ'
     DATE_FORMAT = '%Y-%m-%d'
