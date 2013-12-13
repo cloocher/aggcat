@@ -77,6 +77,9 @@ start_date = Date.today - 30
 end_date = Date.today # optional
 client.account_transactions(account_id, start_date, end_date)
 
+# update account type
+client.update_account_type(account_id, 'CREDITCARD')
+
 # update login credentials
 client.update_login(institution_id, login_id, new_username, new_password)
 
