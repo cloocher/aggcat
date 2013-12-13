@@ -71,8 +71,7 @@ module Aggcat
 
     def update_account_type(account_id, type)
       validate(account_id: account_id, type: type)
-      body = account_type(type)
-      put("/accounts/#{account_id}", body)
+      put("/accounts/#{account_id}", account_type(type))
     end
 
     def delete_account(account_id)
@@ -169,19 +168,19 @@ module Aggcat
 
     def account_type(type)
       xml = Builder::XmlMarkup.new
-      if ['CHECKING', 'SAVINGS', 'MONEYMRKT', 'RECURRINGDEPOSIT', 'CD', 'CASHMANAGEMENT', 'OVERDRAFT'].include?(type)
+      if BANKING_TYPES.include?(type)
         xml.tag!('ns4:BankingAccount', {'xmlns:ns4' => BANKING_ACCOUNT_NAMESPACE}) do
           xml.tag!('ns4:bankingAccountType', type)
         end
-      elsif ['CREDITCARD', 'LINEOFCREDIT', 'OTHER'].include?(type)
+      elsif CREDIT_TYPES.include?(type)
         xml.tag!('ns4:CreditAccount', {'xmlns:ns4' => CREDIT_ACCOUNT_NAMESPACE}) do
           xml.tag!('ns4:creditAccountType', type)
         end
-      elsif ['LOAN', 'AUTO', 'COMMERCIAL', 'CONSTR', 'CONSUMER', 'HOMEEQUITY', 'MILITARY', 'MORTGAGE', 'SMB', 'STUDENT'].include?(type)
+      elsif LOAN_TYPES.include?(type)
         xml.tag!('ns4:Loan', {'xmlns:ns4' => LOAN_NAMESPACE}) do
           xml.tag!('ns4:loanType', type)
         end
-      elsif ['TAXABLE', '401K', 'BROKERAGE', 'IRA', '403B', 'KEOGH', 'TRUST', 'TDA', 'SIMPLE', 'NORMAL', 'SARSEP', 'UGMA', 'OTHER'].include?(type)
+      elsif INVESTMENT_TYPES.include?(type)
         xml.tag!('ns4:InvestmentAccount', {'xmlns:ns4' => INVESTMENT_ACCOUNT_NAMESPACE}) do
           xml.tag!('ns4:investmentAccountType', type)
         end

@@ -6,6 +6,7 @@ require 'net/https'
 require 'oauth'
 require 'openssl'
 require 'securerandom'
+require 'set'
 require 'xmlhasher'
 require 'uri'
 
@@ -21,6 +22,11 @@ module Aggcat
     LOAN_NAMESPACE = 'http://schema.intuit.com/platform/fdatafeed/loan/v1'
     INVESTMENT_ACCOUNT_NAMESPACE = 'http://schema.intuit.com/platform/fdatafeed/investmentaccount/v1'
     REWARD_ACCOUNT_NAMESPACE = 'http://schema.intuit.com/platform/fdatafeed/rewardsaccount/v1'
+
+    BANKING_TYPES = Set.new %w(CHECKING SAVINGS MONEYMRKT RECURRINGDEPOSIT CD CASHMANAGEMENT OVERDRAFT)
+    CREDIT_TYPES = Set.new %w(CREDITCARD LINEOFCREDIT OTHER)
+    LOAN_TYPES = Set.new %w(LOAN AUTO COMMERCIAL CONSTR CONSUMER HOMEEQUITY MILITARY MORTGAGE SMB STUDENT)
+    INVESTMENT_TYPES = Set.new %w(TAXABLE 401K BROKERAGE IRA 403B KEOGH TRUST TDA SIMPLE NORMAL SARSEP UGMA OTHER)
 
     TIME_FORMAT = '%Y-%m-%dT%T.%LZ'
     DATE_FORMAT = '%Y-%m-%d'
