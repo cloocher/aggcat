@@ -84,7 +84,7 @@ client.update_account_type(account_id, 'CREDITCARD')
 client.update_login(institution_id, login_id, new_username, new_password)
 
 # in case MFA is required
-client.update_login_confirmation(institution_id, challenge_session_id, challenge_node_id, answers)
+client.update_login_confirmation(login_id, challenge_session_id, challenge_node_id, answers)
 
 # you can set scope inline for any request
 Aggcat.scope(customer_id).account(account_id)
