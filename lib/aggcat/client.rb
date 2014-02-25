@@ -22,9 +22,9 @@ module Aggcat
       get("/institutions/#{institution_id}")
     end
 
-    def discover_and_add_accounts(institution_id, username, password)
-      validate(institution_id: institution_id, username: username, password: password)
-      body = credentials(institution_id, username, password)
+    def discover_and_add_accounts(institution_id, *login_credentials)
+      validate(institution_id: institution_id, username: login_credentials[0], password: login_credentials[1])
+      body = credentials(institution_id, login_credentials)
       post("/institutions/#{institution_id}/logins", body)
     end
 
@@ -57,9 +57,9 @@ module Aggcat
       get("/logins/#{login_id}/accounts")
     end
 
-    def update_login(institution_id, login_id, username, password)
-      validate(institution_id: institution_id, login_id: login_id, username: username, password: password)
-      body = credentials(institution_id, username, password)
+    def update_login(institution_id, login_id, *login_credentials)
+      validate(institution_id: institution_id, login_id: login_id, username: login_credentials[0], password: login_credentials[1])
+      body = credentials(institution_id, login_credentials)
       put("/logins/#{login_id}?refresh=true", body)
     end
 
@@ -133,14 +133,19 @@ module Aggcat
       end
     end
 
-    def credentials(institution_id, username, password)
+    def credentials(institution_id, login_credentials)
       institution = institution(institution_id)
       raise ArgumentError.new("institution_id #{institution_id} is invalid") if institution.nil? || institution[:result][:institution_detail].nil?
-      keys = institution[:result][:institution_detail][:keys][:key].sort { |a, b| a[:display_order].to_i <=> b[:display_order].to_i }
-      hash = {
-          keys[0][:name] => username,
-          keys[1][:name] => password
-      }
+      institution_login_keys = institution[:result][:institution_detail][:keys][:key].sort { |a, b| a[:display_order].to_i <=> b[:display_order].to_i }
+
+      if institution_login_keys.length != login_credentials.length
+        raise ArgumentError.new("institution_id #{institution_id} requires #{institution_login_keys.length} credential fields but was only given #{login_credentials.length} to authenticate with.")
+      end
+
+      hash = {}
+      institution_login_keys.each_with_index do |institution_login_key, index|
+        hash[institution_login_key[:name]] = login_credentials[index].to_s
+      end
 
       xml = Builder::XmlMarkup.new
       xml.InstitutionLogin('xmlns' => LOGIN_NAMESPACE) do |login|
