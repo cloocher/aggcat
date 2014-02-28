@@ -136,20 +136,12 @@ module Aggcat
     def credentials(institution_id, login_credentials)
       institution = institution(institution_id)
       raise ArgumentError.new("institution_id #{institution_id} is invalid") if institution.nil? || institution[:result][:institution_detail].nil?
-      institution_login_keys = institution[:result][:institution_detail][:keys][:key].sort {
-          |a, b| a[:display_order].to_i <=> b[:display_order].to_i
-        }.delete_if {
-          |institution_login_key| institution_login_key[:display_flag] == 'false'
-        }
-
-      if institution_login_keys.length != login_credentials.length
-        raise ArgumentError.new("institution_id #{institution_id} requires #{institution_login_keys.length} credential fields but was given #{login_credentials.length} to authenticate with.")
+      login_keys = institution[:result][:institution_detail][:keys][:key].select { |key| key[:display_flag] == 'true' }.sort { |a, b| a[:display_order].to_i <=> b[:display_order].to_i }
+      if login_keys.length != login_credentials.length
+        raise ArgumentError.new("institution_id #{institution_id} requires #{login_keys.length} credential fields but was given #{login_credentials.length} to authenticate with.")
       end
 
-      hash = {}
-      institution_login_keys.each_with_index do |institution_login_key, index|
-        hash[institution_login_key[:name]] = login_credentials[index].to_s
-      end
+      hash = login_keys.each_with_index.inject({}) { |h, (key, index)| h[key[:name]] = login_credentials[index].to_s; h }
 
       xml = Builder::XmlMarkup.new
       xml.InstitutionLogin('xmlns' => LOGIN_NAMESPACE) do |login|
