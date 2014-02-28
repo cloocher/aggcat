@@ -37,12 +37,12 @@
       <description>2</description>
     </key>
     <key>
-      <name>Account pin</name>
+      <name>Banking Password Old</name>
       <status>Active</status>
       <valueLengthMin>1</valueLengthMin>
       <valueLengthMax>100</valueLengthMax>
-      <displayFlag>true</displayFlag>
-      <displayOrder>3</displayOrder>
+      <displayFlag>false</displayFlag>
+      <displayOrder>2</displayOrder>
       <mask>true</mask>
       <instructions>2</instructions>
       <description>2</description>
