@@ -139,7 +139,7 @@ module Aggcat
       institution_login_keys = institution[:result][:institution_detail][:keys][:key].sort { |a, b| a[:display_order].to_i <=> b[:display_order].to_i }
 
       if institution_login_keys.length != login_credentials.length
-        raise ArgumentError.new("institution_id #{institution_id} requires #{institution_login_keys.length} credential fields but was only given #{login_credentials.length} to authenticate with.")
+        raise ArgumentError.new("institution_id #{institution_id} requires #{institution_login_keys.length} credential fields but was given #{login_credentials.length} to authenticate with.")
       end
 
       hash = {}
