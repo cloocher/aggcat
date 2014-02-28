@@ -52,6 +52,15 @@ class ClientTest < Test::Unit::TestCase
     assert_equal '000000000001', response[:result][:account_list][:banking_account][:account_id]
   end
 
+  def test_discover_and_add_accounts_inactive_fields
+    institution_id = '100000'
+    stub_get("/institutions/#{institution_id}").to_return(:body => fixture('institution_hidden_fields.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
+    stub_post("/institutions/#{institution_id}/logins").to_return(:body => fixture('account.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
+    response = @client.discover_and_add_accounts(institution_id, 'username', 'password')
+    assert_equal institution_id, response[:result][:account_list][:banking_account][:institution_id]
+    assert_equal '000000000001', response[:result][:account_list][:banking_account][:account_id]
+  end
+
   def test_discover_and_add_accounts_with_challenge
     institution_id = '100000'
     stub_get("/institutions/#{institution_id}").to_return(:body => fixture('institution.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})

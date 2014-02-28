@@ -30,7 +30,7 @@
       <status>Active</status>
       <valueLengthMin>1</valueLengthMin>
       <valueLengthMax>100</valueLengthMax>
-      <displayFlag>false</displayFlag>
+      <displayFlag>true</displayFlag>
       <displayOrder>2</displayOrder>
       <mask>true</mask>
       <instructions>2</instructions>
