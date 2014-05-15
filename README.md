@@ -7,16 +7,10 @@
 
 ## Installation
 
-Aggcat is available through [Rubygems](http://rubygems.org/gems/aggcat) and can be installed via:
+Add this custom verion
 
 ```
-$ gem install aggcat
-```
-
-or add it to your Gemfile like this:
-
-```
-gem 'aggcat'
+gem 'aggcat', :git => 'https://github.com:turlockmike/aggcat'
 ```
 
 ## Start Guide
