@@ -10,7 +10,7 @@
 Add this custom verion
 
 ```
-gem 'aggcat', :git => 'https://github.com:turlockmike/aggcat'
+gem 'aggcat', :git => 'https://github.com/turlockmike/aggcat'
 ```
 
 ## Start Guide
