@@ -76,7 +76,7 @@ module Aggcat
       if @certificate.nil?
         @certificate = File.read(@certificate_path)
       end
-      key = OpenSSL::PKey::RSA.new(@certificate)
+      key = OpenSSL::PKey::RSA.new(@certificate, @certificate_password)
       signature_value = Base64.encode64(key.sign(OpenSSL::Digest::SHA1.new(nil), signed_info)).gsub(/\n/, '')
       signature = %[<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/><ds:Reference URI="#_#{reference_id}"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>#{digest}</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>#{signature_value}</ds:SignatureValue></ds:Signature>]
       assertion_with_signature = assertion.sub(/saml2:Issuer\>\<saml2:Subject/, "saml2:Issuer>#{signature}<saml2:Subject")
