@@ -87,6 +87,11 @@ module Aggcat
       result
     end
 
+    def investment_positions(account_id)
+      validate(account_id: account_id)
+      get("/accounts/#{account_id}/positions")
+    end
+
     protected
 
     def get(path, headers = {})

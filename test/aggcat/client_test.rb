@@ -314,4 +314,12 @@ class ClientTest < Test::Unit::TestCase
     assert_raise(Timeout::Error) { @client.institution(institution_id) }
   end
 
+  def test_investment_postitions
+    account_id = '000000000001'
+    stub_get("/accounts/#{account_id}/positions").to_return(:body => fixture('positions.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
+    response = @client.investment_positions(account_id)
+    assert_equal response[:result][:investment_positions][:position][0][:investment_position_id].to_i , 000000000001
+    assert_equal response[:result][:investment_positions][:position][1][:investment_position_id].to_i , 000000000002
+  end
+
 end
