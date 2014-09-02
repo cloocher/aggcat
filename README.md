@@ -86,6 +86,9 @@ client.update_login(institution_id, login_id, new_username, new_password)
 # in case MFA is required
 client.update_login_confirmation(login_id, challenge_session_id, challenge_node_id, answers)
 
+# get position info for an investment account
+client.investment_positions(account_id)
+
 # you can set scope inline for any request
 Aggcat.scope(customer_id).account(account_id)
 
