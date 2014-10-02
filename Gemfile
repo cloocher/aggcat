@@ -1,8 +1,7 @@
 source 'https://rubygems.org'
 
-gem 'rake'
-
 group :test do
+  gem 'rake'
   gem 'minitest'
   gem 'test-unit'
   gem 'simplecov', :require => false
