@@ -36,6 +36,10 @@ Aggcat.configure do |config|
   config.consumer_key = 'your consumer key'
   config.consumer_secret = 'your consumer secret'
   config.certificate_path = '/path/to/your/certificate/key'
+  # if your certificate is a string, instead of specify the path you can set the value like so
+  # Note certificate_value takes precedence over certificate_path
+  # Also make sure your certificate has newline characters as appropriate
+  config.certificate_value = "-----BEGIN RSA PRIVATE KEY-----\nasdf123FOO$BAR\n...\n-----END RSA PRIVATE KEY-----"
 end
 
 # alternatively, specify configuration options when instantiating an Aggcat::Client
@@ -43,7 +47,7 @@ client = Aggcat::Client.new(
   issuer_id: 'your issuer id',
   consumer_key: 'your consumer key',
   consumer_secret: 'your consumer secret',
-  certificate_path: '/path/to/your/certificate/key',
+  certificate_path: '/path/to/your/certificate/key', # OR certificate_value: "--BEGIN RSA KEY--..."
   customer_id: 'scope for all requests'
 )
 
