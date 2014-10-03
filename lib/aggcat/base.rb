@@ -81,7 +81,7 @@ module Aggcat
     end
 
     def certificate
-      @certificate_value || File.read(@certificate_path)
+      @certificate_value ||= File.read(@certificate_path)
     end
 
     def iso8601(time)
