@@ -1,6 +1,7 @@
 require 'aggcat/version'
 require 'aggcat/configurable'
 require 'aggcat/base'
+require 'aggcat/institutions_sax_parser'
 require 'aggcat/client'
 
 module Aggcat

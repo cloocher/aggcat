@@ -13,8 +13,14 @@ module Aggcat
       end
     end
 
-    def institutions
-      get('/institutions')
+    def institutions(&block)
+      url = '/institutions'
+      if block_given?
+        response = oauth_client.send(:get, BASE_URL + url)
+        Ox.sax_parse(InstitutionsSaxParser.new(block), StringIO.new(response.body))
+      else
+        get(url)
+      end
     end
 
     def institution(institution_id)
