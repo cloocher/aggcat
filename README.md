@@ -61,7 +61,8 @@ client.institutions
 client.institution(14007)
 
 # add new financial account to aggregate from Bank of America
-response = client.discover_and_add_accounts(14007, username, password)
+# the second argument is a Hash of the required fields specified in the client.institution() response
+response = client.discover_and_add_accounts(14007, {'key1'=>'value1','key2'=>'value2','key3'=>'value3'})
 
 # in case MFA is required
 questions = response[:result][:challenges]
