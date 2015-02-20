@@ -35,7 +35,7 @@ module Aggcat
     end
 
     def account_confirmation(institution_id, challenge_session_id, challenge_node_id, answers)
-      validate(institution_id: institution_id, challenge_node_id: challenge_session_id, challenge_node_id: challenge_node_id, answers: answers)
+      validate(institution_id: institution_id, challenge_session_id: challenge_session_id, challenge_node_id: challenge_node_id, answers: answers)
       headers = {'challengeSessionId' => challenge_session_id, 'challengeNodeId' => challenge_node_id}
       post("/institutions/#{institution_id}/logins", challenge_answers(answers), headers)
     end
@@ -70,7 +70,7 @@ module Aggcat
     end
 
     def update_login_confirmation(login_id, challenge_session_id, challenge_node_id, answers)
-      validate(login_id: login_id, challenge_node_id: challenge_session_id, challenge_node_id: challenge_node_id, answers: answers)
+      validate(login_id: login_id, challenge_session_id: challenge_session_id, challenge_node_id: challenge_node_id, answers: answers)
       headers = {'challengeSessionId' => challenge_session_id, 'challengeNodeId' => challenge_node_id}
       put("/logins/#{login_id}?refresh=true", challenge_answers(answers), headers)
     end
