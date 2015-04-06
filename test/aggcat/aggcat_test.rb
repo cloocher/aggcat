@@ -15,7 +15,7 @@ class AggcatTest < Test::Unit::TestCase
       config.issuer_id = 'issuer_id'
       config.consumer_key = 'consumer_key'
       config.consumer_secret = 'consumer_secret'
-      config.certificate_value = File.read("#{fixture_path}/cert.key")
+      config.certificate_path = "#{fixture_path}/cert.key"
       config.open_timeout = 5
       config.read_timeout = 30
     end
