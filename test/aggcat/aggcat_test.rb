@@ -45,6 +45,22 @@ class AggcatTest < Test::Unit::TestCase
     assert_equal 30, configurable.instance_variable_get(:'@read_timeout')
   end
 
+  def test_configure_certificate_with_password
+    cert_value = File.read("#{fixture_path}/cert.key")
+    configurable = Aggcat.configure do |config|
+      config.issuer_id = 'issuer_id'
+      config.consumer_key = 'consumer_key'
+      config.consumer_secret = 'consumer_secret'
+      config.certificate_value = cert_value
+      config.certificate_password = 'cert_password'
+    end
+    assert_equal 'issuer_id', configurable.instance_variable_get(:'@issuer_id')
+    assert_equal 'consumer_key', configurable.instance_variable_get(:'@consumer_key')
+    assert_equal 'consumer_secret', configurable.instance_variable_get(:'@consumer_secret')
+    assert_equal cert_value, configurable.instance_variable_get(:'@certificate_value')
+    assert_equal 'cert_password', configurable.instance_variable_get(:'@certificate_password')
+  end
+
   def test_scope
     client1 = Aggcat.scope('1')
     assert_true client1.is_a?(Aggcat::Client)
