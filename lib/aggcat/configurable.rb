@@ -1,7 +1,7 @@
 module Aggcat
   module Configurable
 
-    KEYS = [:issuer_id, :consumer_key, :consumer_secret, :certificate_value, :certificate_path, :customer_id, :open_timeout, :read_timeout, :verbose]
+    KEYS = [:issuer_id, :consumer_key, :consumer_secret, :certificate_value, :certificate_password, :certificate_path, :customer_id, :open_timeout, :read_timeout, :verbose]
 
     attr_writer *KEYS
 
@@ -15,6 +15,5 @@ module Aggcat
     def options
       Aggcat::Configurable::KEYS.inject({}) { |hash, key| hash[key] = instance_variable_get(:"@#{key}"); hash }
     end
-
   end
 end

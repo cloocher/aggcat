@@ -40,6 +40,8 @@ Aggcat.configure do |config|
   # certificate_value takes precedence over certificate_path
   # certificate_value should contain newline characters as appropriate
   # config.certificate_value = "-----BEGIN RSA PRIVATE KEY-----\nasdf123FOO$BAR\n...\n-----END RSA PRIVATE KEY-----"
+  # certificate's can contain passwords, put your password here.
+  # config.certificate_password = "1234"
 end
 
 # alternatively, specify configuration options when instantiating an Aggcat::Client
