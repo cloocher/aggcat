@@ -98,6 +98,11 @@ module Aggcat
       get("/accounts/#{account_id}/positions")
     end
 
+    def refresh_login(login_id)
+      validate(login_id: login_id)
+      put("/logins/#{login_id}?refresh=true", refresh_login_request)
+    end
+
     protected
 
     def get(path, headers = {})
@@ -176,6 +181,11 @@ module Aggcat
           end
         end
       end
+    end
+
+    def refresh_login_request
+      xml = Builder::XmlMarkup.new
+      xml.InstitutionLogin('xmlns' => LOGIN_NAMESPACE)
     end
 
     def account_type(type)
