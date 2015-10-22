@@ -13,8 +13,14 @@ module Aggcat
       end
     end
 
-    def institutions
-      get('/institutions')
+    def institutions(&block)
+      url = '/institutions'
+      if block_given?
+        response = oauth_client.send(:get, BASE_URL + url)
+        Ox.sax_parse(InstitutionsSaxParser.new(block), StringIO.new(response.body))
+      else
+        get(url)
+      end
     end
 
     def institution(institution_id)
@@ -90,6 +96,11 @@ module Aggcat
     def investment_positions(account_id)
       validate(account_id: account_id)
       get("/accounts/#{account_id}/positions")
+    end
+
+    def refresh_login(login_id)
+      validate(login_id: login_id)
+      put("/logins/#{login_id}?refresh=true", refresh_login_request)
     end
 
     protected
@@ -170,6 +181,11 @@ module Aggcat
           end
         end
       end
+    end
+
+    def refresh_login_request
+      xml = Builder::XmlMarkup.new
+      xml.InstitutionLogin('xmlns' => LOGIN_NAMESPACE)
     end
 
     def account_type(type)

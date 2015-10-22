@@ -322,4 +322,10 @@ class ClientTest < Test::Unit::TestCase
     assert_equal response[:result][:investment_positions][:position][1][:investment_position_id].to_i , 000000000002
   end
 
+  def test_refresh_login
+    login_id = '12345'
+    stub_put("/logins/#{login_id}?refresh=true").to_return(:status => 200)
+    response = @client.refresh_login(login_id)
+    assert_equal '200', response[:status_code]
+  end
 end
