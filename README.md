@@ -36,6 +36,7 @@ Aggcat.configure do |config|
   config.consumer_key = 'your consumer key'
   config.consumer_secret = 'your consumer secret'
   config.certificate_path = '/path/to/your/certificate/key'
+  config.verbose = false # verpose = true will output all raw XML API requests/responses to STDOUT
   # certificate could be provided as a string instead of a path to a file using certificate_value
   # certificate_value takes precedence over certificate_path
   # certificate_value should contain newline characters as appropriate
