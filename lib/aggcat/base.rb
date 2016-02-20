@@ -90,6 +90,7 @@ module Aggcat
 
     def parse_xml(data)
       return data if data.nil? || data.to_s.empty?
+      $stdout.puts(data) if @verbose
       @parser ||= XmlHasher::Parser.new(snakecase: true, ignore_namespaces: true)
       @parser.parse(data)
     end

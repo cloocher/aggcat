@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Status xmlns="http://schema.intuit.com/platform/fdatafeed/common/v1">
+  <errorInfo>
+    <errorType>APP_ERROR</errorType>
+    <errorCode>api.max.customers</errorCode>
+    <errorMessage>The offering has reached the maximum number of customers allowed.</errorMessage>
+    <correlationId>gw-49b48b84-8962-46af-9116-fdaf4fe5ac9e</correlationId>
+  </errorInfo>
+</Status>

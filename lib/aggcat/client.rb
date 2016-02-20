@@ -140,7 +140,9 @@ module Aggcat
 
     def credentials(institution_id, login_credentials)
       institution = institution(institution_id)
-      raise ArgumentError.new("institution_id #{institution_id} is invalid") if institution.nil? || institution[:result].nil? || institution[:result][:institution_detail].nil?
+      if institution.nil? || institution[:result].nil? || institution[:result][:institution_detail].nil?
+        raise ArgumentError.new(institution[:result][:status][:error_info][:error_message])
+      end
       login_keys = institution[:result][:institution_detail][:keys][:key].select { |key| key[:display_flag] == 'true' }.sort { |a, b| a[:display_order].to_i <=> b[:display_order].to_i }
       if login_keys.length != login_credentials.length
         raise ArgumentError.new("institution_id #{institution_id} requires #{login_keys.length} credential fields but was given #{login_credentials.length} to authenticate with.")

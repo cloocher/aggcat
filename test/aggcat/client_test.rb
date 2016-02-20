@@ -318,8 +318,16 @@ class ClientTest < Test::Unit::TestCase
     account_id = '000000000001'
     stub_get("/accounts/#{account_id}/positions").to_return(:body => fixture('positions.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
     response = @client.investment_positions(account_id)
-    assert_equal response[:result][:investment_positions][:position][0][:investment_position_id].to_i , 000000000001
-    assert_equal response[:result][:investment_positions][:position][1][:investment_position_id].to_i , 000000000002
+    assert_equal response[:result][:investment_positions][:position][0][:investment_position_id].to_i, 000000000001
+    assert_equal response[:result][:investment_positions][:position][1][:investment_position_id].to_i, 000000000002
+  end
+
+  def test_max_customers_reached
+    institution_id = '100000'
+    stub_get("/institutions/#{institution_id}").to_return(:body => fixture('max_customers_reached.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
+    stub_post("/institutions/#{institution_id}/logins").to_return(:body => fixture('max_customers_reached.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
+    exception = assert_raise(ArgumentError) { @client.discover_and_add_accounts(institution_id, 'username', 'password') }
+    assert_equal('The offering has reached the maximum number of customers allowed.', exception.message)
   end
 
 end
