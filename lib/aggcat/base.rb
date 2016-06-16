@@ -54,7 +54,7 @@ module Aggcat
     end
 
     def new_token(message)
-      uri = URI.parse(SAML_URL)
+      uri = URI.parse(@oauth_url)
       http = Net::HTTP.new(uri.host, uri.port)
       request = Net::HTTP::Post.new(uri.request_uri)
       request['Authorization'] = %[OAuth oauth_consumer_key="#{@consumer_key}"]
