@@ -3,6 +3,8 @@ require 'test_helper'
 class AggcatTest < Test::Unit::TestCase
   def setup
     Aggcat.configure do |config|
+      config.oauth_url = 'oauth_url'
+      config.base_url = 'base_url'
       config.issuer_id = 'issuer_id'
       config.consumer_key = 'consumer_key'
       config.consumer_secret = 'consumer_secret'
@@ -12,6 +14,8 @@ class AggcatTest < Test::Unit::TestCase
 
   def test_configure
     configurable = Aggcat.configure do |config|
+      config.oauth_url = 'oauth_url'
+      config.base_url = 'base_url'
       config.issuer_id = 'issuer_id'
       config.consumer_key = 'consumer_key'
       config.consumer_secret = 'consumer_secret'
@@ -19,6 +23,8 @@ class AggcatTest < Test::Unit::TestCase
       config.open_timeout = 5
       config.read_timeout = 30
     end
+    assert_equal 'oauth_url', configurable.instance_variable_get(:'@oauth_url')
+    assert_equal 'base_url', configurable.instance_variable_get(:'@base_url')
     assert_equal 'issuer_id', configurable.instance_variable_get(:'@issuer_id')
     assert_equal 'consumer_key', configurable.instance_variable_get(:'@consumer_key')
     assert_equal 'consumer_secret', configurable.instance_variable_get(:'@consumer_secret')
@@ -30,6 +36,8 @@ class AggcatTest < Test::Unit::TestCase
   def test_configure_certificate_by_value
     cert_value = File.read("#{fixture_path}/cert.key")
     configurable = Aggcat.configure do |config|
+      config.oauth_url = 'oauth_url'
+      config.base_url = 'base_url'
       config.issuer_id = 'issuer_id'
       config.consumer_key = 'consumer_key'
       config.consumer_secret = 'consumer_secret'
@@ -37,6 +45,8 @@ class AggcatTest < Test::Unit::TestCase
       config.open_timeout = 5
       config.read_timeout = 30
     end
+    assert_equal 'oauth_url', configurable.instance_variable_get(:'@oauth_url')
+    assert_equal 'base_url', configurable.instance_variable_get(:'@base_url')
     assert_equal 'issuer_id', configurable.instance_variable_get(:'@issuer_id')
     assert_equal 'consumer_key', configurable.instance_variable_get(:'@consumer_key')
     assert_equal 'consumer_secret', configurable.instance_variable_get(:'@consumer_secret')
@@ -48,12 +58,16 @@ class AggcatTest < Test::Unit::TestCase
   def test_configure_certificate_with_password
     cert_value = File.read("#{fixture_path}/cert.key")
     configurable = Aggcat.configure do |config|
+      config.oauth_url = 'oauth_url'
+      config.base_url = 'base_url'
       config.issuer_id = 'issuer_id'
       config.consumer_key = 'consumer_key'
       config.consumer_secret = 'consumer_secret'
       config.certificate_value = cert_value
       config.certificate_password = 'cert_password'
     end
+    assert_equal 'oauth_url', configurable.instance_variable_get(:'@oauth_url')
+    assert_equal 'base_url', configurable.instance_variable_get(:'@base_url')
     assert_equal 'issuer_id', configurable.instance_variable_get(:'@issuer_id')
     assert_equal 'consumer_key', configurable.instance_variable_get(:'@consumer_key')
     assert_equal 'consumer_secret', configurable.instance_variable_get(:'@consumer_secret')
@@ -64,6 +78,8 @@ class AggcatTest < Test::Unit::TestCase
   def test_scope
     client1 = Aggcat.scope('1')
     assert_true client1.is_a?(Aggcat::Client)
+    assert_equal 'oauth_url', client1.instance_variable_get(:'@oauth_url')
+    assert_equal 'base_url', client1.instance_variable_get(:'@base_url')
     assert_equal 'issuer_id', client1.instance_variable_get(:'@issuer_id')
     assert_equal 'consumer_key', client1.instance_variable_get(:'@consumer_key')
     assert_equal 'consumer_secret', client1.instance_variable_get(:'@consumer_secret')

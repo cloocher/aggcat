@@ -1,7 +1,7 @@
 module Aggcat
   module Configurable
 
-    KEYS = [:issuer_id, :consumer_key, :consumer_secret, :certificate_value, :certificate_password, :certificate_path, :customer_id, :open_timeout, :read_timeout, :verbose]
+    KEYS = [:oauth_url, :base_url, :issuer_id, :consumer_key, :consumer_secret, :certificate_value, :certificate_password, :certificate_path, :customer_id, :open_timeout, :read_timeout, :verbose]
 
     attr_writer *KEYS
 
