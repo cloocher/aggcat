@@ -117,7 +117,7 @@ module Aggcat
     def request(http_method, path, *options)
       tries = 0
       begin
-        response = oauth_client.send(http_method, BASE_URL + path, *options)
+        response = oauth_client.send(http_method, @base_url + path, *options)
         result = {:status_code => response.code, :result => parse_xml(response.body)}
         if response['challengeSessionId']
           result[:challenge_session_id] = response['challengeSessionId']
