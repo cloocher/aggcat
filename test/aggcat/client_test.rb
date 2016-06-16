@@ -1,8 +1,14 @@
 require 'test_helper'
 
 class ClientTest < Test::Unit::TestCase
+  INTUIT_OAUTH_URL = Aggcat::Base::SAML_URL
+  INTUIT_BASE_URL = Aggcat::Client::BASE_URL
+
+  FINICITY_OAUTH_URL = 'https://api.finicity.com/oauth/v1/get_access_token_by_saml'
+  FINICITY_BASE_URL = 'https://api.finicity.com/financialdatafeed/v1'
+
   def setup
-    stub_request(:post, Aggcat::Base::SAML_URL).to_return(:status => 200, :body => fixture('oauth_token.txt'))
+    stub_request(:post, INTUIT_OAUTH_URL).to_return(:status => 200, :body => fixture('oauth_token.txt'))
     @client = Aggcat::Client.new(
         {
             issuer_id: 'issuer_id',
@@ -12,20 +18,53 @@ class ClientTest < Test::Unit::TestCase
             customer_id: 'default'
         }
     )
+
+    stub_request(:post, FINICITY_OAUTH_URL).to_return(:status => 200, :body => fixture('oauth_token.txt'))
+    @finicity_client = Aggcat::Client.new(
+        {
+            oauth_url: FINICITY_OAUTH_URL,
+            base_url: FINICITY_BASE_URL,
+            issuer_id: 'issuer_id',
+            consumer_key: 'consumer_key',
+            consumer_secret: 'consumer_secret',
+            certificate_path: "#{fixture_path}/cert.key",
+            customer_id: 'default'
+        }
+    )
   end
 
-  def test_arguments
-    assert_equal 'issuer_id', @client.instance_variable_get(:'@issuer_id')
-    assert_equal 'consumer_key', @client.instance_variable_get(:'@consumer_key')
-    assert_equal 'consumer_secret', @client.instance_variable_get(:'@consumer_secret')
-    assert_equal "#{fixture_path}/cert.key", @client.instance_variable_get(:'@certificate_path')
-    assert_equal 'default', @client.instance_variable_get(:'@customer_id')
-    assert_equal false, @client.instance_variable_get(:'@verbose')
+  def test_intuit_arguments
+    assert_equal INTUIT_OAUTH_URL, @client.instance_variable_get(:'@oauth_url')
+    assert_equal INTUIT_BASE_URL, @client.instance_variable_get(:'@base_url')
+    check_arguments @client
+  end
+
+  def test_finicity_arguments
+    assert_equal FINICITY_OAUTH_URL, @finicity_client.instance_variable_get(:'@oauth_url')
+    assert_equal FINICITY_BASE_URL, @finicity_client.instance_variable_get(:'@base_url')
+    check_arguments @finicity_client
+  end
+
+  def check_arguments(client)
+    assert_equal 'issuer_id', client.instance_variable_get(:'@issuer_id')
+    assert_equal 'consumer_key', client.instance_variable_get(:'@consumer_key')
+    assert_equal 'consumer_secret', client.instance_variable_get(:'@consumer_secret')
+    assert_equal "#{fixture_path}/cert.key", client.instance_variable_get(:'@certificate_path')
+    assert_equal 'default', client.instance_variable_get(:'@customer_id')
+    assert_equal false, client.instance_variable_get(:'@verbose')
   end
 
   def test_institutions
-    stub_get('/institutions').to_return(:body => fixture('institutions.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
-    response = @client.institutions
+    check_institutions INTUIT_BASE_URL, @client
+  end
+
+  def test_finicity_institutions
+    check_institutions FINICITY_BASE_URL, @finicity_client
+  end
+
+  def check_institutions(base_url, client)
+    stub_request(:get, base_url + '/institutions').to_return(:body => fixture('institutions.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
+    response = client.institutions
     assert_equal response[:result][:institutions][:institution][0][:institution_id].to_i, 100000
   end
 
