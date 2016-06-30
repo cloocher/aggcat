@@ -1,8 +1,13 @@
 require 'test_helper'
 
 class AggcatTest < Test::Unit::TestCase
+  OAUTH_URL = Aggcat::Base::SAML_URL
+  BASE_URL = Aggcat::Client::BASE_URL
+
   def setup
     Aggcat.configure do |config|
+      config.oauth_url = OAUTH_URL
+      config.base_url = BASE_URL
       config.issuer_id = 'issuer_id'
       config.consumer_key = 'consumer_key'
       config.consumer_secret = 'consumer_secret'
@@ -12,6 +17,8 @@ class AggcatTest < Test::Unit::TestCase
 
   def test_configure
     configurable = Aggcat.configure do |config|
+      config.oauth_url = OAUTH_URL
+      config.base_url = BASE_URL
       config.issuer_id = 'issuer_id'
       config.consumer_key = 'consumer_key'
       config.consumer_secret = 'consumer_secret'
@@ -19,6 +26,8 @@ class AggcatTest < Test::Unit::TestCase
       config.open_timeout = 5
       config.read_timeout = 30
     end
+    assert_equal OAUTH_URL, configurable.instance_variable_get(:'@oauth_url')
+    assert_equal BASE_URL, configurable.instance_variable_get(:'@base_url')
     assert_equal 'issuer_id', configurable.instance_variable_get(:'@issuer_id')
     assert_equal 'consumer_key', configurable.instance_variable_get(:'@consumer_key')
     assert_equal 'consumer_secret', configurable.instance_variable_get(:'@consumer_secret')
@@ -30,6 +39,8 @@ class AggcatTest < Test::Unit::TestCase
   def test_configure_certificate_by_value
     cert_value = File.read("#{fixture_path}/cert.key")
     configurable = Aggcat.configure do |config|
+      config.oauth_url = OAUTH_URL
+      config.base_url = BASE_URL
       config.issuer_id = 'issuer_id'
       config.consumer_key = 'consumer_key'
       config.consumer_secret = 'consumer_secret'
@@ -37,6 +48,8 @@ class AggcatTest < Test::Unit::TestCase
       config.open_timeout = 5
       config.read_timeout = 30
     end
+    assert_equal OAUTH_URL, configurable.instance_variable_get(:'@oauth_url')
+    assert_equal BASE_URL, configurable.instance_variable_get(:'@base_url')
     assert_equal 'issuer_id', configurable.instance_variable_get(:'@issuer_id')
     assert_equal 'consumer_key', configurable.instance_variable_get(:'@consumer_key')
     assert_equal 'consumer_secret', configurable.instance_variable_get(:'@consumer_secret')
@@ -48,12 +61,16 @@ class AggcatTest < Test::Unit::TestCase
   def test_configure_certificate_with_password
     cert_value = File.read("#{fixture_path}/cert.key")
     configurable = Aggcat.configure do |config|
+      config.oauth_url = OAUTH_URL
+      config.base_url = BASE_URL
       config.issuer_id = 'issuer_id'
       config.consumer_key = 'consumer_key'
       config.consumer_secret = 'consumer_secret'
       config.certificate_value = cert_value
       config.certificate_password = 'cert_password'
     end
+    assert_equal OAUTH_URL, configurable.instance_variable_get(:'@oauth_url')
+    assert_equal BASE_URL, configurable.instance_variable_get(:'@base_url')
     assert_equal 'issuer_id', configurable.instance_variable_get(:'@issuer_id')
     assert_equal 'consumer_key', configurable.instance_variable_get(:'@consumer_key')
     assert_equal 'consumer_secret', configurable.instance_variable_get(:'@consumer_secret')
@@ -64,6 +81,8 @@ class AggcatTest < Test::Unit::TestCase
   def test_scope
     client1 = Aggcat.scope('1')
     assert_true client1.is_a?(Aggcat::Client)
+    assert_equal OAUTH_URL, client1.instance_variable_get(:'@oauth_url')
+    assert_equal BASE_URL, client1.instance_variable_get(:'@base_url')
     assert_equal 'issuer_id', client1.instance_variable_get(:'@issuer_id')
     assert_equal 'consumer_key', client1.instance_variable_get(:'@consumer_key')
     assert_equal 'consumer_secret', client1.instance_variable_get(:'@consumer_secret')
@@ -83,7 +102,7 @@ class AggcatTest < Test::Unit::TestCase
   end
 
   def test_client_api
-    stub_request(:post, Aggcat::Base::SAML_URL).to_return(:status => 200, :body => fixture('oauth_token.txt'))
+    stub_request(:post, OAUTH_URL).to_return(:status => 200, :body => fixture('oauth_token.txt'))
     Aggcat.scope('1')
     stub_get('/institutions').to_return(:body => fixture('institutions.xml'), :headers => {:content_type => 'application/xml; charset=utf-8'})
     response = Aggcat.institutions

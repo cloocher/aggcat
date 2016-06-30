@@ -5,6 +5,8 @@ module Aggcat
 
     def initialize(options={})
       raise ArgumentError.new('customer_id is required for scoping all requests') if options[:customer_id].nil? || options[:customer_id].to_s.empty?
+      options[:oauth_url] ||= SAML_URL
+      options[:base_url] ||= BASE_URL
       options[:open_timeout] ||= OPEN_TIMEOUT
       options[:read_timeout] ||= READ_TIMEOUT
       options[:verbose] ||= false
@@ -115,7 +117,7 @@ module Aggcat
     def request(http_method, path, *options)
       tries = 0
       begin
-        response = oauth_client.send(http_method, BASE_URL + path, *options)
+        response = oauth_client.send(http_method, @base_url + path, *options)
         result = {:status_code => response.code, :result => parse_xml(response.body)}
         if response['challengeSessionId']
           result[:challenge_session_id] = response['challengeSessionId']
@@ -200,5 +202,3 @@ module Aggcat
     end
   end
 end
-
-

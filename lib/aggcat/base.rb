@@ -54,7 +54,7 @@ module Aggcat
     end
 
     def new_token(message)
-      uri = URI.parse(SAML_URL)
+      uri = URI.parse(@oauth_url)
       http = Net::HTTP.new(uri.host, uri.port)
       request = Net::HTTP::Post.new(uri.request_uri)
       request['Authorization'] = %[OAuth oauth_consumer_key="#{@consumer_key}"]
@@ -77,7 +77,7 @@ module Aggcat
       signature_value = Base64.encode64(key.sign(OpenSSL::Digest::SHA1.new(nil), signed_info)).gsub(/\n/, '')
       signature = %[<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/><ds:Reference URI="#_#{reference_id}"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>#{digest}</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>#{signature_value}</ds:SignatureValue></ds:Signature>]
       assertion_with_signature = assertion.sub(/saml2:Issuer\>\<saml2:Subject/, "saml2:Issuer>#{signature}<saml2:Subject")
-      Base64.encode64(assertion_with_signature)
+      Base64.strict_encode64(assertion_with_signature)
     end
 
     def certificate
