@@ -25,6 +25,20 @@ Register for [Intuit Customer Account Data](https://developer.intuit.com/docs/00
 
 Get your OAuth data.
 
+Or
+
+Register for [Finicity Facade API](https://www.finicity.com/IntuitTransition/)
+
+If you want to use the Finicity Facade API set the following additional
+configuration parameters:
+
+```ruby
+oauth_url: 'https://api.finicitydev.com/oauth/v1/get_access_token_by_saml'
+base_url: 'https://api.finicitydev.com/financialdatafeed/v1'
+```
+
+See: [Finicity Setup](https://finicity.zendesk.com/hc/en-us/articles/208775606-Finicity-Setup)
+
 ## Usage
 
 ```ruby
@@ -32,11 +46,13 @@ require 'aggcat'
 
 # Aggcat global configuration
 Aggcat.configure do |config|
+  config.oauth_url 'oauth url if using Finicity Facade API'
+  config.base_url 'base url if using Finicity Facade API'
   config.issuer_id = 'your issuer id'
   config.consumer_key = 'your consumer key'
   config.consumer_secret = 'your consumer secret'
   config.certificate_path = '/path/to/your/certificate/key'
-  config.verbose = false # verpose = true will output all raw XML API requests/responses to STDOUT
+  config.verbose = false # verbose = true will output all raw XML API requests/responses to STDOUT
   # certificate could be provided as a string instead of a path to a file using certificate_value
   # certificate_value takes precedence over certificate_path
   # certificate_value should contain newline characters as appropriate
