@@ -132,7 +132,7 @@ Please make sure to read Intuit's [Account Data API](http://docs.developer.intui
 
 ## Requirements
 
-* Ruby 1.9.3 or higher
+* Ruby 2.2.2 or higher
 
 ## Copyright
 Copyright (c) 2013 Gene Drabkin.
