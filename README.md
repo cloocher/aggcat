@@ -33,8 +33,8 @@ If you want to use the Finicity Facade API set the following additional
 configuration parameters:
 
 ```ruby
-oauth_url: 'https://api.finicitydev.com/oauth/v1/get_access_token_by_saml'
-base_url: 'https://api.finicitydev.com/financialdatafeed/v1'
+oauth_url: 'https://api.finicity.com/oauth/v1/get_access_token_by_saml'
+base_url: 'https://api.finicity.com/financialdatafeed/v1'
 ```
 
 See: [Finicity Setup](https://finicity.zendesk.com/hc/en-us/articles/208775606-Finicity-Setup)
