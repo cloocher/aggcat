@@ -25,6 +25,7 @@ class AggcatTest < Test::Unit::TestCase
       config.certificate_path = "#{fixture_path}/cert.key"
       config.open_timeout = 5
       config.read_timeout = 30
+      config.proxy = ENV['AGGCAT_PROXY']
     end
     assert_equal OAUTH_URL, configurable.instance_variable_get(:'@oauth_url')
     assert_equal BASE_URL, configurable.instance_variable_get(:'@base_url')
@@ -34,6 +35,7 @@ class AggcatTest < Test::Unit::TestCase
     assert_equal "#{fixture_path}/cert.key", configurable.instance_variable_get(:'@certificate_path')
     assert_equal 5, configurable.instance_variable_get(:'@open_timeout')
     assert_equal 30, configurable.instance_variable_get(:'@read_timeout')
+    assert_equal ENV['AGGCAT_PROXY'], configurable.instance_variable_get(:'@proxy')
   end
 
   def test_configure_certificate_by_value
