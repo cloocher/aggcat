@@ -41,7 +41,7 @@ module Aggcat
     end
 
     def oauth_consumer
-      @oauth_consumer ||= OAuth::Consumer.new(@consumer_key, @consumer_secret, {timeout: @read_timeout, open_timeout: @open_timeout, verbose: @verbose})
+      @oauth_consumer ||= OAuth::Consumer.new(@consumer_key, @consumer_secret, {timeout: @read_timeout, open_timeout: @open_timeout, verbose: @verbose, proxy: @proxy})
     end
 
     def oauth_token(force=false)
@@ -55,7 +55,7 @@ module Aggcat
 
     def new_token(message)
       uri = URI.parse(@oauth_url)
-      http = Net::HTTP.new(uri.host, uri.port)
+      http = http_object(uri)
       request = Net::HTTP::Post.new(uri.request_uri)
       request['Authorization'] = %[OAuth oauth_consumer_key="#{@consumer_key}"]
       request.set_form_data({:saml_assertion => message})
@@ -65,6 +65,15 @@ module Aggcat
       response = http.request(request)
       params = CGI::parse(response.body)
       [params['oauth_token'][0], params['oauth_token_secret'][0]]
+    end
+
+    def http_object(our_uri)
+      if @proxy.nil?
+        http_object = Net::HTTP.new(our_uri.host, our_uri.port)
+      else
+        proxy_uri = @proxy.is_a?(URI) ? @proxy : URI.parse(@proxy)
+        http_object = Net::HTTP.new(our_uri.host, our_uri.port, proxy_uri.host, proxy_uri.port, proxy_uri.user, proxy_uri.password)
+      end
     end
 
     def saml_message(user_id)
@@ -90,8 +99,9 @@ module Aggcat
 
     def parse_xml(data)
       return data if data.nil? || data.to_s.empty?
+      data.force_encoding('UTF-8')
       $stdout.puts(data) if @verbose
-      @parser ||= XmlHasher::Parser.new(snakecase: true, ignore_namespaces: true)
+      @parser ||= XmlHasher::Parser.new(snakecase: false, ignore_namespaces: true)
       @parser.parse(data)
     end
   end
