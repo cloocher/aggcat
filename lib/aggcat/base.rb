@@ -99,8 +99,9 @@ module Aggcat
 
     def parse_xml(data)
       return data if data.nil? || data.to_s.empty?
+      data.force_encoding('UTF-8')
       $stdout.puts(data) if @verbose
-      @parser ||= XmlHasher::Parser.new(snakecase: true, ignore_namespaces: true)
+      @parser ||= XmlHasher::Parser.new(snakecase: false, ignore_namespaces: true)
       @parser.parse(data)
     end
   end
